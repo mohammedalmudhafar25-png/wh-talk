@@ -263,17 +263,17 @@ const PLAYER=new Audio();PLAYER.preload='auto';
 function clipURL(id){const a=AUD[id];if(!a)return null;const k=S.acc+id;if(urlCache[k])return urlCache[k];
  const b64=a[S.acc]||a.us;const bin=atob(b64);const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
  return urlCache[k]=URL.createObjectURL(new Blob([u8],{type:'audio/mpeg'}))}
-function stopAudio(){try{PLAYER.pause()}catch(e){}if(curAudio){curAudio._done&&curAudio._done();curAudio=null}}
-function say(id,rate){stopAudio();const u=clipURL(id);if(!u)return Promise.resolve();
+function stopAudio(){try{PLAYER.pause()}catch(e){}if(curAudio){curAudio._done&&curAudio._done(false);curAudio=null}}
+function say(id,rate){stopAudio();const u=clipURL(id);if(!u)return Promise.resolve(true);
  return new Promise(res=>{const a=PLAYER;const r=rate||RATE[S.pace];let done=false;const tok={};
-  tok._done=()=>{if(!done){done=true;a.onended=a.onerror=null;if(curAudio===tok)curAudio=null;res()}};curAudio=tok;
-  a.onended=tok._done;a.onerror=tok._done;a.src=u;a.defaultPlaybackRate=r;a.playbackRate=r;a.preservesPitch=true;a.webkitPreservesPitch=true;
+  tok._done=(ok)=>{if(!done){done=true;a.onended=a.onerror=null;if(curAudio===tok)curAudio=null;res(ok===true)}};curAudio=tok;
+  a.onended=()=>tok._done(true);a.onerror=()=>tok._done(false);a.src=u;a.defaultPlaybackRate=r;a.playbackRate=r;a.preservesPitch=true;a.webkitPreservesPitch=true;
   a.onloadedmetadata=()=>{a.playbackRate=r};
-  const p=a.play();if(p&&p.catch)p.catch(tok._done);
-  setTimeout(()=>{if(!done&&a.paused&&a.currentTime===0)tok._done()},4000)})}
+  const p=a.play();if(p&&p.catch)p.catch(()=>tok._done(false));
+  setTimeout(()=>{if(!done&&a.paused&&a.currentTime===0)tok._done(false)},6000)})}
 /* unlock audio on iPhone with the first tap */
 document.addEventListener('pointerdown',function un(){try{PLAYER.src=SILENT;const q=PLAYER.play();if(q&&q.catch)q.catch(()=>{})}catch(e){}document.removeEventListener('pointerdown',un,true)},true);
-async function sayAll(ids,gap=350){const nav=NAV;for(const id of ids){if(nav!==NAV)return;await say(id);await sleep(gap/RATE[S.pace])}}
+async function sayAll(ids,gap=350){const nav=NAV;for(const id of ids){if(nav!==NAV)return false;if(!(await say(id)))return false;await sleep(gap/RATE[S.pace])}return true}
 /* sound effects (Web Audio) */
 let AC=null;function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
 function tone(f,t0,d,type='sine',g=.18,f2){const c=ac();if(!c||!S.snd)return;const o=c.createOscillator(),v=c.createGain();o.type=type;o.frequency.setValueAtTime(f,c.currentTime+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,c.currentTime+t0+d);
@@ -511,6 +511,7 @@ function goHome(){NAV++;stopAudio();hideFb();CUR=null;const st=store.get('stars'
  <div class="setbar">${segHTML()}</div>
  <div class="sec"><span>Games · الألعاب</span><span>${Object.values(st).reduce((a,b)=>a+b,0)} / 30 ★</span></div>
  <div class="grid">${GAMES.map((g,i)=>`<button class="gcard" onclick="openGame('${g.id}')"><div class="ic" style="background:${g.col}">${G_IC[g.id]}</div><div><b>${i+1}. ${g.t}</b><small>${g.sub}</small><small class="ar">${g.ar}</small><div class="stars">${starsHTML(st[g.id]||0)}</div></div></button>`).join('')}</div>
+ ${location.protocol.startsWith('http')?`<a class="gcard" style="margin-top:12px;text-decoration:none;color:inherit" href="audio.html"><div class="ic" style="background:#E0F2FE">${G_IC.dialogue}</div><div><b>🎧 Listening pack — all lesson audio</b><small>Every page of the lesson as MP3 · UK &amp; US · play or download</small><small class="ar">كل صوتيات الدرس — استمع أو حمّل</small></div></a>`:''}
  <div class="foot"><span class="n">MR. MOHAMMED YAHYA AL-MUDHAFAR</span> | <span class="c">CIS COLLEGE</span> | <span class="m">MYALM EDUCATION</span></div></main>`;
  bindSeg(app());window.scrollTo(0,0)}
 function openGame(id){NAV++;sfx.tap();stopAudio();hideFb();const g=GAMES.find(x=>x.id===id);CUR=g;
@@ -741,7 +742,7 @@ function orderGame(g,mode,ri=0){shell(g,mode);const st=$('#stage');const R=D.ord
   $$('button.oline',st).forEach(b=>b.onclick=async()=>{if(k>=L.length||!b.isConnected)return;const j=+b.dataset.j;if(j===k){sfx.good();k++;render();await say(L[j].au);if(k===L.length&&b.isConnected!==undefined)finish()}else{sfx.bad();miss++;b.classList.add('bad');setTimeout(()=>b.classList.remove('bad'),450);toast(`Not yet! Next speaker: <b>${L[k].sp}</b>. <span class="ar">المتكلم التالي: ${L[k].sp}</span>`)}})}
  async function finish(){const pct=Math.max(0,Math.round(100*(L.length-miss)/L.length));setStars(g.id,starsFor(pct));sfx.win();
   st.insertAdjacentHTML('beforeend',`<div class="end"><div class="bigstars">${starsHTML(starsFor(pct))}</div><h2>${pct}% — ${miss===0?'Perfect order!':'Done!'}</h2><div class="row"><button class="play" id="pa">${IC.play} Play the whole dialogue</button>${ri<D.order.length-1?`<button class="play teal" id="nr">Next dialogue ➜</button>`:`<button class="play teal" onclick="openGame('dialogue')">Next game ➜</button>`}</div></div>`);
-  $('#pa').onclick=async()=>{const ls=$$('.oline',st);const nav=NAV;for(let j=0;j<L.length&&nav===NAV;j++){ls.forEach(x=>x.style.outline='');ls[j].style.outline='4px solid #FFC23C';await say(L[j].au);await sleep(250)}ls.forEach(x=>x.style.outline='')};
+  let pl=false;$('#pa').onclick=async()=>{if(pl){stopAudio();return}pl=true;const ls=$$('.oline',st);const nav=NAV;for(let j=0;j<L.length&&nav===NAV;j++){ls.forEach(x=>x.style.outline='');ls[j].style.outline='4px solid #FFC23C';if(!(await say(L[j].au)))break;await sleep(400/RATE[S.pace])}pl=false;ls.forEach(x=>x.style.outline='')};
   const nr=$('#nr');if(nr)nr.onclick=()=>orderGame(g,mode,ri+1)}
  render()}
 
@@ -752,9 +753,9 @@ function dialogueGame(g,mode,di=0){shell(g,mode);const st=$('#stage');const DL=D
  const head=`<div class="tabs">${D.dialogues.map((d,j)=>`<button class="tab ${j===di?'on':''}" data-j="${j}">${d.title}</button>`).join('')}</div><p class="ask"><b style="color:#1E2A5A">${DL.title}</b> — ${esc(DL.info)}<span class="ar">${DL.ar}</span></p>`;
  const bindTabs=()=>$$('.tab',st).forEach(b=>b.onclick=()=>{stopAudio();dialogueGame(g,mode,+b.dataset.j)});
  if(mode==='dlisten'){st.innerHTML=head+`<div class="row" style="margin-bottom:12px"><button class="play" id="pa">${IC.play} Play all</button><button class="play ghost sm" id="ps">■ Stop</button></div><div class="dl">${DL.lines.map((l,i)=>bubble(l,DL.cast,i)).join('')}</div><p class="hint">Tap any line to hear it again. Yellow = key words. <span class="ar">اضغط أي سطر لسماعه</span></p>`;bindTabs();
-  let stop=false;const hiL=i=>{$$('.bub',st).forEach((b,k)=>b.classList.toggle('now',k===i));const el=$$('.ln',st)[i];el&&el.scrollIntoView({behavior:'smooth',block:'center'})};
-  $('#pa').onclick=async()=>{stop=false;const nav=NAV;for(let i=0;i<DL.lines.length&&!stop&&nav===NAV;i++){hiL(i);$('.prog i').style.width=(100*(i+1)/DL.lines.length)+'%';await say(DL.lines[i].au);await sleep(300/RATE[S.pace])}if(nav!==NAV)return;hiL(-1);if(!stop){setStars(g.id,Math.max(1,store.get('stars',{})[g.id]||0));toast('Now try Role-play! 🎭 <span class="ar">جرّب تمثيل الدور الآن</span>',2500)}};
-  $('#ps').onclick=()=>{stop=true;stopAudio()};$$('.ln',st).forEach(el=>el.onclick=()=>{const i=+el.dataset.i;hiL(i);say(DL.lines[i].au)});return}
+  let playing=false;const hiL=i=>{$$('.bub',st).forEach((b,k)=>b.classList.toggle('now',k===i));const el=$$('.ln',st)[i];el&&el.scrollIntoView({behavior:'smooth',block:'center'})};
+  $('#pa').onclick=async()=>{if(playing){stopAudio();return}playing=true;$('#pa').innerHTML='■ Stop';const nav=NAV;let all=true;for(let i=0;i<DL.lines.length;i++){hiL(i);$('.prog i').style.width=(100*(i+1)/DL.lines.length)+'%';const ok=await say(DL.lines[i].au);if(!ok||nav!==NAV){all=false;break}await sleep(450/RATE[S.pace])}if(nav!==NAV)return;playing=false;$('#pa').innerHTML=IC.play+' Play all';hiL(-1);if(all){setStars(g.id,Math.max(1,store.get('stars',{})[g.id]||0));toast('Now try Role-play! 🎭 <span class="ar">جرّب تمثيل الدور الآن</span>',2500)}};
+  $('#ps').onclick=()=>stopAudio();$$('.ln',st).forEach(el=>el.onclick=()=>{if(playing)return;const i=+el.dataset.i;hiL(i);say(DL.lines[i].au)});return}
  if(mode==='role'){st.innerHTML=head+`<p class="ask">Who are you? <span class="ar">من أنت؟ اختر الشخصية</span></p><div class="row">${DL.cast.map(c=>`<button class="play" style="background:${SPC[c]}" data-c="${c}">I am ${c==='Driver'?'the driver':c}</button>`).join('')}</div>`;bindTabs();
   $$('[data-c]',st).forEach(b=>b.onclick=()=>role(b.dataset.c));return}
  if(mode==='gap')return gapPlay();
@@ -762,7 +763,7 @@ function dialogueGame(g,mode,di=0){shell(g,mode);const st=$('#stage');const DL=D
   st.innerHTML=head+`<div class="dl" id="dl"></div><div id="rz"></div>`;bindTabs();const dl=$('#dl'),rz=$('#rz');
   async function step(){if(nav!==NAV)return;$('.prog i').style.width=(100*i/L.length)+'%';if(i>=L.length){const pct=cnt?Math.round(tot/cnt):0;return endScreen(g,'role',pct,`Your speaking score as ${me}.`)}
    const l=L[i];dl.insertAdjacentHTML('beforeend',bubble(l,DL.cast,i,l.sp===me?'me now':'now'));$$('.bub',dl).forEach((b,k)=>b.classList.toggle('now',k===i));dl.lastElementChild.scrollIntoView({behavior:'smooth',block:'center'});
-   if(l.sp!==me){rz.innerHTML='';await say(l.au);if(nav!==NAV)return;i++;await sleep(250);return step()}
+   if(l.sp!==me){rz.innerHTML='';let ok=await say(l.au);if(nav!==NAV)return;if(!ok){await sleep(200);ok=await say(l.au);if(nav!==NAV)return}i++;await sleep(450/RATE[S.pace]);return step()}
    rz.innerHTML=`<p class="ask">Your turn! Say your line. <span class="ar">دورك! قل جملتك</span></p><div class="row"><button class="play sm ghost" id="hm">${IC.spk} Hear it first</button><button class="play sm ghost" id="sk">Skip ➜</button></div><div id="mz"></div>`;
    $('#hm').onclick=()=>say(l.au);$('#sk').onclick=()=>{cnt++;i++;step()};let tries=0;
    micWidget($('#mz'),{label:'Tap and say your line',maxMs:9000,onResult:res=>{if(res.self){res.h.insertAdjacentHTML('beforeend',`<div class="row"><button class="play sm teal" id="ok1">I said it ✓</button></div>`);$('#ok1').onclick=()=>{tot+=80;cnt++;i++;step()};return}
