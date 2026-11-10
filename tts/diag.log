@@ -1,0 +1,26 @@
+us dl_home_0 1.0 | Hello! Where to? |  Hello, where to?
+uk dl_home_0 1.0 | Hello! Where to? |  Hello? Where to?
+us dl_home_1 1.0 | Hi. Can you take me to Al-Jumhuriya, please? |  Hi, can you take me to Aljum Huria please?
+uk dl_home_1 1.0 | Hi. Can you take me to Al-Jumhuriya, please? |  Hi. Can you take me to Eljume Huria, please?
+us dl_home_2 1.0 | Sure. Which way? The Corniche or the main street? |  Sure, which way? The Corniche or the Main Street?
+uk dl_home_2 1.0 | Sure. Which way? The Corniche or the main street? |  Sure. Which way? The Cornish or the Main Street.
+us dl_home_3 1.0 | The Corniche, please, because the main street is busy now. |  The Corniche, please, because the main street is busy now.
+uk dl_home_3 1.0 | The Corniche, please, because the main street is busy now. |  The Cornish, please, because the Main Street is busy now.
+us dl_home_4 0.83 | OK. Are you in a hurry? |  Okay, are you in a hurry?
+uk dl_home_4 0.83 | OK. Are you in a hurry? |  Okay, are you in a hurry?
+us dl_home_5 1.0 | Yes, a little, because I have dinner with my family at 8:00. |  Yes, a little, because I have dinner with my family at 8 o'clock.
+uk dl_home_5 0.92 | Yes, a little, because I have dinner with my family at 8:00. |  Yes, a little because I had dinner with my family at 8 o'clock.
+us dl_home_6 0.86 | No problem. It takes about fifteen minutes. |  No problem. Takes about 15 minutes.
+uk dl_home_6 1.0 | No problem. It takes about fifteen minutes. |  no problem. it takes about 15 minutes
+us dl_home_7 1.0 | Go straight, then turn left at the traffic lights. |  Go straight, then turn left at the traffic lights.
+uk dl_home_7 0.89 | Go straight, then turn left at the traffic lights. |  Go straight, then turn left to the traffic lights.
+us dl_home_8 1.0 | Here? |  Here.
+uk dl_home_8 1.0 | Here? |  Here.
+us dl_home_9 1.0 | No, the second street. Go past the mosque. My house is next to the pharmacy. |  No, the second street. Go past the mosque. My house is next to the pharmacy.
+uk dl_home_9 1.0 | No, the second street. Go past the mosque. My house is next to the pharmacy. |  No, the second street. Go past the mosque. My house is next to the pharmacy.
+us dl_home_10 1.0 | Stop here, please. How much is it? |  Stop here, please. How much is it?
+uk dl_home_10 1.0 | Stop here, please. How much is it? |  Stop here, please. How much is it?
+us dl_home_11 0.67 | 5,000 dinars. |  5,000 denars
+uk dl_home_11 0.67 | 5,000 dinars. |  5,000 D-NARS
+us dl_home_12 1.0 | Here you are. Thank you! |  Here you are. Thank you.
+uk dl_home_12 1.0 | Here you are. Thank you! |  Here you are. Thank you.
