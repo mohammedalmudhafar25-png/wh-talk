@@ -4,6 +4,7 @@ V={"us":{"n":"en-US-AvaNeural","m1":"en-US-AndrewNeural","m2":"en-US-BrianNeural
    "uk":{"n":"en-GB-SoniaNeural","m1":"en-GB-RyanNeural","m2":"en-GB-ThomasNeural","f2":"en-GB-LibbyNeural"}}
 FIX=[("Al-Jumhuriya","Al Jumhooriya"),("Al-Ashar","Al Ashar"),("Al-Jazair","Al Jazaa-ir"),("8:00","8 o'clock"),("4:00","4 o'clock"),("4 o'clock","4 o'clock")]
 clips=json.load(open('clips.json'))
+os.makedirs('mp3n',exist_ok=True)
 sem=asyncio.Semaphore(6)
 async def one(acc,cid,text,role):
     out=f"mp3n/{acc}_{cid}.mp3"
