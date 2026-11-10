@@ -272,6 +272,7 @@ body.noar .kw{border-bottom:0;cursor:inherit}
 .opts3 .grp b{display:flex;gap:5px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:4px}
 .seg{display:flex;flex-wrap:wrap;gap:6px}
 /* results modal */
+.res .rs{margin-left:6px;width:34px;height:34px;border-radius:50%;border:2px solid #e3c8d8;background:#fff;color:#c0262d;display:inline-grid;place-items:center;cursor:pointer;flex:none;padding:0}.res .rs:hover{background:#ffe3e6}.res .rs .ic{width:18px;height:18px}
 .modal{position:fixed;inset:0;background:rgba(43,22,48,.75);display:none;align-items:center;justify-content:center;padding:14px;z-index:70}
 .modal.on{display:flex}
 .mc{background:#fff;border-radius:26px;max-width:540px;width:100%;padding:20px;max-height:92vh;overflow:auto;animation:popIn .5s var(--ease)}
@@ -501,7 +502,10 @@ body.lite .floaty,body.lite .hero{animation:none}
  <p class="hint" id="resDate"></p>
  <p class="hint">Take a screenshot and send it to your teacher.</p>
  <div class="tools"><button class="pill" style="background:#25a35a" id="sendRep"><svg class="ic"><use href="#g-download"/></svg>Send to teacher</button><button class="pill ghost" id="copyRep"><svg class="ic"><use href="#g-check"/></svg>Copy report</button></div>
- <div class="tools"><button class="pill sm ghost" id="resetAll" style="color:#c0262d"><svg class="ic"><use href="#g-reset"/></svg>Start again (delete my progress)</button></div>
+ <div class="tools"><button class="pill" style="background:var(--gold);color:var(--choc)" id="saveAll"><svg class="ic"><use href="#g-download"/></svg>Save my progress</button><button class="pill ghost" id="loadAll"><svg class="ic"><use href="#g-play"/></svg>Open a saved file</button><input type="file" id="loadFile" accept=".json,application/json" style="display:none"></div>
+ <p class="hint" id="saveNote">Your work saves automatically on this device. “Save my progress” also makes a backup file (with your recordings) that you can keep.</p>
+ <div class="tools"><button class="pill sm ghost" id="resetAll" style="color:#c0262d"><svg class="ic"><use href="#g-reset"/></svg>Delete everything &amp; start from zero</button></div>
+ <p class="hint">To delete only one activity, tap the small ↺ button next to it.</p>
  <div class="tools"><button class="vbtn" data-intro="end" style="--c:#ffc23d"><svg class="ic"><use href="#g-voice"/></svg></button><button class="pill" id="resClose"><svg class="ic"><use href="#g-check"/></svg>Close</button></div>
 </div></div>
 
@@ -885,8 +889,8 @@ paintPace();$('#paceBtn').onclick=()=>{const i=PACES.findIndex(p=>p[0]===PACE);P
 $('#stName').value=LS.get('name','');$('#stName').oninput=e=>LS.set('name',e.target.value);
 $('#resBtn').onclick=()=>{sfx.pop();const rows=[['i-words','1 · Words & Examples','a1',`Quick Check: ${scores.qc||0}/8`],['i-listen','2 · Listen & Catch','a2',`Gap-fill: ${scores.gap||0}/10`],['i-race','3 · Team Race','a3',scores.race?`Solo score: ${scores.race}`:'Played in teams'],['i-talk','4 · Talk About It','a4',`Questions answered: ${talked.size}`],['i-dub','5 · Dub It!','a5',scores.dub?'Dub watched ✔':'Not finished yet']];
  const tot=Object.values(stars).reduce((a,b)=>a+b,0);
- $('#resList').innerHTML=rows.map((r,i)=>`<div style="animation-delay:${i*0.08}s">${ic(r[0])}<span>${r[1]}<br><small style="color:var(--muted)">${r[3]}</small></span><span class="st">${starHTML(stars[r[2]]||0)}</span></div>`).join('')+`<div style="background:var(--choc);color:#fff;animation-delay:.45s">${ic('i-trophy')}<span>Total stars · Recordings: ${Object.keys(recs).length+Object.keys(dub.takes).length}</span><b style="color:var(--gold);font-size:22px">${tot} / 15</b></div>`;
- $('#resDate').textContent=new Date().toLocaleString();$('#resModal').classList.add('on');if(tot>=10){sfx.stars();burst(120)}};
+ $('#resList').innerHTML=rows.map((r,i)=>`<div style="animation-delay:${i*0.08}s">${ic(r[0])}<span>${r[1]}<br><small style="color:var(--muted)">${r[3]}</small></span><span class="st">${starHTML(stars[r[2]]||0)}</span><button class="rs" data-a="${r[2]}" title="Delete this activity’s progress">${ic('g-reset')}</button></div>`).join('')+`<div style="background:var(--choc);color:#fff;animation-delay:.45s">${ic('i-trophy')}<span>Total stars · Recordings: ${Object.keys(recs).length+Object.keys(dub.takes).length}</span><b style="color:var(--gold);font-size:22px">${tot} / 15</b></div>`;
+ $$('#resList .rs').forEach(b=>b.onclick=()=>resetAct(b.dataset.a));$('#resDate').textContent=new Date().toLocaleString();$('#resModal').classList.add('on');if(tot>=10){sfx.stars();burst(120)}};
 $('#resClose').onclick=()=>{sfx.click();stopAll();$('#resModal').classList.remove('on')};
 $('#resModal').onclick=e=>{if(e.target.id==='resModal')$('#resModal').classList.remove('on')};
 
@@ -897,7 +901,37 @@ $('#sendRep').onclick=async()=>{if(needName())return;sfx.pop();const t=report();
  if(navigator.share){try{await navigator.share({title:'My Ralph lesson results',text:t});return}catch(e){if(e&&e.name==='AbortError')return}}
  window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank')};
 $('#copyRep').onclick=async()=>{if(needName())return;const t=report();try{await navigator.clipboard.writeText(t);toast('Report copied. Paste it in WhatsApp to your teacher.')}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Report copied.')}catch(e2){toast('Could not copy — take a screenshot instead.')}ta.remove()}};
-$('#resetAll').onclick=()=>{if(!confirm('Delete all your stars, scores, recordings and saved place in this lesson?'))return;try{Object.keys(localStorage).filter(k=>k.startsWith('rvm2_')&&!/_(mute|intro|ar|proj|pace)$/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}RDB.clearAll();setTimeout(()=>location.reload(),300)};
+$('#resetAll').onclick=()=>{if(!confirm('Delete EVERYTHING in this lesson (stars, scores, recordings, saved place) and start from zero?'))return;try{Object.keys(localStorage).filter(k=>k.startsWith('rvm2_')&&!/_(mute|intro|ar|proj|pace)$/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}RDB.clearAll();setTimeout(()=>location.reload(),300)};
+/* ======================= SAVE / LOAD / RESET ======================= */
+const ACTN={a1:'1 · Words & Examples',a2:'2 · Listen & Catch',a3:'3 · Team Race',a4:'4 · Talk About It',a5:'5 · Dub It!'};
+function afterReset(){persist();LS.set('stars',stars);LS.set('scores',scores);setTimeout(()=>location.reload(),350)}
+function resetAct(a){if(!confirm('Delete your progress and recordings for “'+ACTN[a]+'”? The other activities stay.'))return;
+ delete stars[a];
+ const del=(o,ks)=>ks.forEach(k=>delete o[k]);
+ if(a==='a1'){del(scores,['qc']);LS.set('seen',[]);del(ST,['g','qc']);RDB.clearPrefix('pic')}
+ if(a==='a2'){del(scores,['gap']);del(ST,['scn','gi','gs']);RDB.clearPrefix('L');RDB.clearPrefix('C')}
+ if(a==='a3'){del(scores,['race']);del(ST,['race'])}
+ if(a==='a4'){LS.set('talked',[]);LS.set('votes',{});del(ST,['tg','tq']);RDB.clearPrefix('T')}
+ if(a==='a5'){del(scores,['dub']);RDB.clearPrefix('D')}
+ afterReset()}
+function idbAll(){return new Promise(res=>{const out=[];try{if(!rdb)return res(out);rdb.transaction('r').objectStore('r').openCursor().onsuccess=e=>{const c=e.target.result;if(c){out.push([String(c.key),c.value]);c.continue()}else res(out)}}catch(e){res(out)}})}
+const b2d=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)});
+$('#saveAll').onclick=async()=>{sfx.pop();persist();LS.set('stars',stars);LS.set('scores',scores);LS.set('talked',[...talked]);LS.set('seen',[...seenCards]);
+ const ls={};try{Object.keys(localStorage).filter(k=>k.startsWith('rvm2_')).forEach(k=>ls[k]=localStorage.getItem(k))}catch(e){}
+ const items=await idbAll();const rec={};for(const [k,v] of items){try{rec[k]=await b2d(v)}catch(e){}}
+ const nm=($('#stName').value||'student').trim().replace(/[^A-Za-z0-9؀-ۿ]+/g,'-')||'student';
+ const blob=new Blob([JSON.stringify({app:'ralph-vanellope-l7',saved:new Date().toISOString(),ls,rec})],{type:'application/json'});const fn='Ralph-progress-'+nm+'.json';
+ try{const f=new File([blob],fn,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'My Ralph lesson progress'});toast('Saved ✔ Keep the file somewhere safe.');return}}catch(e){if(e&&e.name==='AbortError')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+ toast('Saved ✔ '+Object.keys(rec).length+' recordings + your place and stars are in the file.',4200)};
+$('#loadAll').onclick=()=>{sfx.click();$('#loadFile').click()};
+$('#loadFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(d.app!=='ralph-vanellope-l7')throw 0;
+ if(!confirm('Open this saved file? It will replace the progress on this device.'))return;
+ Object.keys(localStorage).filter(k=>k.startsWith('rvm2_')&&!/_(mute|intro|ar|proj|pace)$/.test(k)).forEach(k=>localStorage.removeItem(k));
+ Object.entries(d.ls||{}).forEach(([k,v])=>{if(!/_(mute|intro|ar|proj|pace)$/.test(k))localStorage.setItem(k,v)});
+ RDB.clearAll();await new Promise(r=>setTimeout(r,200));
+ for(const [k,u] of Object.entries(d.rec||{})){const bl=await (await fetch(u)).blob();await new Promise(r=>{try{const t=rdb.transaction('r','readwrite');t.objectStore('r').put(bl,k);t.oncomplete=r;t.onerror=r}catch(x){r()}})}
+ toast('Progress loaded ✔');setTimeout(()=>location.reload(),600)}catch(err){toast('This is not a saved Ralph lesson file.')}e.target.value=''};
 /* ======================= RESTORE PROGRESS ======================= */
 try{const r=indexedDB.open('ralphStudent',1);r.onupgradeneeded=()=>r.result.createObjectStore('r');r.onsuccess=()=>{rdb=r.result;try{rdb.transaction('r').objectStore('r').openCursor().onsuccess=e=>{const c=e.target.result;if(c){const k=String(c.key),u=URL.createObjectURL(c.value);if(k[0]==='D')dub.takes[+k.slice(1)]=u;else recs[k]=u;c.continue()}else{markRecs();if(Object.keys(dub.takes).length)$('#dWatch').style.display='inline-flex'}}}catch(e){}}}catch(e){}
 (function(){const s=ST0;let any=false;Object.assign(ST,ST0);
