@@ -1,6 +1,10 @@
 # Regenerate all clips with Microsoft neural voices (no trimming filters), verify each with speech recognition, retry bad ones.
 import json, os, re, asyncio, sys, edge_tts
 from faster_whisper import WhisperModel
+import subprocess, numpy as np
+def pcm(path):
+    b=subprocess.run(['ffmpeg','-v','error','-i',path,'-f','s16le','-ac','1','-ar','16000','-'],capture_output=True).stdout
+    return np.frombuffer(b,np.int16).astype(np.float32)/32768
 V={"us":{"n":"en-US-AvaNeural","m1":"en-US-AndrewNeural","m2":"en-US-BrianNeural","f2":"en-US-EmmaNeural"},
    "uk":{"n":"en-GB-SoniaNeural","m1":"en-GB-RyanNeural","m2":"en-GB-ThomasNeural","f2":"en-GB-LibbyNeural"}}
 FIX=[("Al-Jumhuriya","Al Jumhooriya"),("Al-Ashar","Al Ashar"),("Al-Jazair","Al Jazaa-ir"),("8:00","8 o'clock"),("4:00","4 o'clock")]
@@ -33,7 +37,7 @@ async def main():
         for attempt in range(3):
             async with sem: ok=await synth(t,V[acc][role],out+".tmp")
             if not ok: continue
-            segs,_=model.transcribe(out+".tmp",language="en",beam_size=1)
+            segs,_=model.transcribe(pcm(out+".tmp"),language="en",beam_size=1)
             heard=" ".join(s.text for s in segs)
             sc=score(text,heard) if len(toks(text))>0 else 1
             if sc>best[0]:
@@ -51,7 +55,7 @@ async def main():
             for acc in ('us','uk'):
                 p=f"mp3n/{acc}_{c}.mp3"
                 if os.path.exists(p):
-                    h=" ".join(s.text for s in model.transcribe(p,language="en",beam_size=1)[0])
+                    h=" ".join(s.text for s in model.transcribe(pcm(p),language="en",beam_size=1)[0])
                     f.write(f"{acc} {c} {round(score(t,h),2)} | {t} | {h}\n")
 asyncio.run(main())
-# rerun
+# rerun 2
