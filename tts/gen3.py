@@ -54,3 +54,4 @@ async def main():
                     h=" ".join(s.text for s in model.transcribe(p,language="en",beam_size=1)[0])
                     f.write(f"{acc} {c} {round(score(t,h),2)} | {t} | {h}\n")
 asyncio.run(main())
+# rerun
