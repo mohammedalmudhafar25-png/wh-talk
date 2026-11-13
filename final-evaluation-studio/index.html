@@ -56,7 +56,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal);bo
 .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:var(--navy);flex:none}
 .prog{height:6px;background:var(--line);border-radius:4px;overflow:hidden;width:110px}
 .prog i{display:block;height:100%;background:var(--teal);border-radius:4px}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:13px;font-weight:700;background:var(--bg);color:var(--ink)}
+.badge{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:13px;font-weight:700;background:var(--bg);color:var(--ink)}
 .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
 /* evaluate */
 .secTabs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
@@ -78,7 +78,7 @@ details ul{margin:6px 0 0;padding-left:20px;font-size:14px;color:var(--ink2)}
 .blab{font-size:13px;font-weight:700;margin-left:auto;white-space:nowrap}
 .note{width:100%;margin-top:8px;border:1.5px dashed var(--line);border-radius:10px;padding:8px 10px;font-size:14px}
 .bandkey{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;margin:2px 0 10px}
-.bandkey span{padding:3px 8px;border-radius:8px;color:#fff;font-weight:700}
+.bandkey span{padding:3px 8px;border-radius:8px;background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:700;display:inline-flex;align-items:center;gap:5px}
 .scorebar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--navy);color:#fff;padding:8px 12px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;align-items:center;font-size:14px}
 .scorebar b{font-size:18px}
 .scorebar .k{display:flex;flex-direction:column;align-items:center;line-height:1.15;min-width:60px}
@@ -105,6 +105,7 @@ details ul{margin:6px 0 0;padding-left:20px;font-size:14px;color:var(--ink2)}
 .hm td.c{width:34px;height:30px;font-weight:700;font-size:12px;border:2px solid #fff;border-radius:6px;padding:0}
 /* report */
 .rbar{position:sticky;top:69px;z-index:30;background:var(--bg);padding:8px 0}
+.pwrap{overflow:hidden}
 .pages{display:flex;flex-direction:column;align-items:center;gap:18px}
 .page{width:210mm;height:297mm;flex:none;background:#fff;box-shadow:0 4px 24px rgba(30,42,90,.12);padding:10mm 13mm 8mm;display:flex;flex-direction:column;position:relative}
 .ph{display:flex;align-items:center;gap:10px;border-bottom:2px solid var(--line);padding-bottom:6px;margin-bottom:10px}
@@ -187,6 +188,18 @@ details ul{margin:6px 0 0;padding-left:20px;font-size:14px;color:var(--ink2)}
 #dock .nm{color:#fff;font-size:13px;font-weight:700}
 #dock.min video{display:none}
 .trans{max-height:260px;overflow:auto;background:var(--bg);border-radius:10px;padding:10px;font-size:14px;white-space:pre-wrap}
+.bt{display:inline-flex;align-items:center;gap:5px;font-weight:700;white-space:nowrap;color:var(--ink)}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+button:disabled,input:disabled,textarea:disabled{opacity:.55;cursor:not-allowed}
+.scale button:disabled:not(.sel){opacity:.35}.scale button.sel:disabled{opacity:1}
+.dtag{font-size:10px;font-weight:800;background:#FFEDC0;color:#7A5A00;border:1px solid #E0A800;border-radius:6px;padding:1px 6px;letter-spacing:.5px}
+.chk{list-style:none;margin:0 0 10px;padding:0;font-size:14px}.chk li{padding:2px 0}.chk .ok{color:#0B7F75}.chk .no{color:#8A5A00;font-weight:600}
+.help ol{margin:8px 0;padding-left:20px}.help li{margin:3px 0}
+.anch{font-size:13.5px;color:var(--ink2);margin-top:6px;padding:6px 8px;background:#FFF9E8;border-radius:8px}
+.ponly{display:none}
+.appf{text-align:center;margin-top:20px;font-family:Stencil,"Stencil Std","Arial Black",Impact,sans-serif;letter-spacing:3px;font-size:11px}
+.appf small{display:block;font-family:"Segoe UI",system-ui,sans-serif;letter-spacing:0;color:var(--mute);margin-top:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media (max-width:760px){
  .top{flex-wrap:wrap;padding:8px 10px}
  nav{order:3;width:100%;margin:0;justify-content:space-between}
@@ -208,7 +221,14 @@ details ul{margin:6px 0 0;padding-left:20px;font-size:14px;color:var(--ink2)}
  main{padding:0;max-width:none}
  .pages{gap:0;display:block}
  #dock{display:none!important}
- .pages{zoom:1!important}
+ .ponly{display:flex!important}
+ body:not([data-view="report"]) main{padding:12mm}
+ body:not([data-view="report"]) .tbl{font-size:11px}
+ body:not([data-view="report"]) .tbl th{font-size:9.5px}
+ .stat,.badge{font-size:10.5px!important;padding:2px 7px!important}
+ body:not([data-view="report"]) .btn,body:not([data-view="report"]) .secTabs{display:none!important}
+ .pages{transform:none!important;width:auto!important}
+ .pwrap{height:auto!important;overflow:visible!important}
  .page{box-shadow:none;width:210mm;height:296.5mm;overflow:hidden;page-break-after:always;break-after:page;max-width:none}
  .lab tr,.box,.mt{break-inside:avoid}
  .page:last-child{page-break-after:auto;break-after:auto}
@@ -332,11 +352,31 @@ const C=[
  d:["Predict 5 audience questions and prepare short answers: Answer + Reason + Example.","Buy time politely: That's a great question… Let me think about that for a second.","Active listening: repeat the question briefly before you answer it."],
  t:"استمع للسؤال جيداً وأعد صياغته باختصار قبل أن تجيب."}
 ];
+/* Next-band targets: what the student must show to reach 5–6, 7–8 and 9 */
+const UP={
+c1:["Speak for about a minute on a familiar topic without long silences, joining ideas with and, but, because and so.","Keep going for 2–3 minutes with only brief, natural hesitation, and guide the listener with a range of linkers (however, as a result, on the other hand).","Speak at length effortlessly: any pause is to think about ideas, not to search for words, and the talk flows as one connected whole."],
+c2:["Have enough everyday and topic words to say what you mean without stopping or switching to Arabic.","Use precise topic vocabulary and common collocations, and paraphrase smoothly when a word is missing.","Use less common and idiomatic language naturally and accurately, with almost no repetition."],
+c3:["Get basic sentences right most of the time: verb tenses, subject–verb agreement (he goes) and a / an / the.","Mix simple and complex sentences (because, although, which, if) with only occasional slips that never confuse the listener.","Use a full range of structures flexibly; errors are rare and hard to notice."],
+c4:["Be understood the first time: clear key sounds and correct stress in common words.","Use word stress, sentence stress and intonation to carry meaning, and link words smoothly.","Sound natural and effortless to follow throughout, with full control of connected speech and intonation."],
+c5:["Explain a simple idea in your own words and give one everyday example.","Simplify a complex idea for the audience, summarise the key points accurately and check that people follow.","Adapt any idea instantly to any listener: change register, re-explain it a different way and summarise precisely."],
+c6:["Look up from your notes or slides at the end of every sentence.","Look at the audience most of the time and include every part of the room.","Hold natural eye contact with individuals throughout and never read from notes."],
+c7:["Stand still and open: face the audience, arms uncrossed, hands out of pockets.","Use purposeful gestures and facial expression to support key points, with no distracting habits.","Own the space: movement, gesture and expression all reinforce the message naturally."],
+c8:["Be heard clearly at the back of the room and avoid one flat tone.","Vary pace, pitch and volume to highlight key points, and pause on purpose.","Use the voice expressively and with full control from the first word to the last."],
+c9:["Keep slides clean and readable: few words, large text, one idea per slide.","Explain each visual in your own words and use it to strengthen the point, without reading it.","Design professional visuals and integrate them so that slides and speech work as one."],
+c10:["Start with a clear hook and ask the audience at least one question.","Keep attention throughout with examples, questions and interaction, and react to the audience.","Hold the room from the first second to the last: the audience is involved and responding."],
+c11:["Give the talk a clear introduction, body and conclusion.","Signpost each section, link the points logically and finish with a strong conclusion.","Build a compelling line of argument where every part leads naturally to the next and to a memorable ending."],
+c12:["Finish within about a minute of the target time and cover all the main points.","Hit the target time with a steady pace that lets the audience absorb each point.","Control time precisely and adjust on the spot (shorten or expand) without the audience noticing."],
+c13:["Know your material well enough to speak without reading, and stay calm after a mistake.","Sound prepared and enthusiastic, and handle surprises without losing your flow.","Speak with full authority and ease; unexpected moments become part of the performance."],
+c14:["Present accurate main facts and explain each one in your own words.","Go beyond the basics with examples, reasons and connections between ideas.","Show expert command of the topic: depth, insight and well-chosen evidence."],
+c15:["Understand questions and give a short, relevant answer.","Answer clearly with a reason or an example, and check that you have answered the question.","Handle any question confidently, including difficult ones, and turn answers into real dialogue."]};
+C.forEach(c=>c.u=UP[c.id]);
+function nextT(c,v){if(v>=9)return{b:"Top band",t:"Keep it at 9: use this skill in new, harder situations and help classmates with it."};const i=v<=4?0:v<=6?1:2;return{b:["5–6 Satisfactory","7–8 Good to Very Good","9 Exceptional"][i],t:c.u[i]}}
+const VER="3.0";
 const REC=[{id:"att",en:"Attendance",ar:"الحضور",pct:1},{id:"hw",en:"Homework & Assignments",ar:"الواجبات والمهام"},{id:"part",en:"Class Participation",ar:"المشاركة الصفية"},{id:"prog",en:"Progress & Effort",ar:"التقدم والجهد"}];
 const LEVELS={L6:{t:"Level 6 English Diploma",sub:"Final Presentation Assessment"},L5:{t:"Level 5 English Course",sub:"Final Performance Review"},X:{t:"English Course",sub:"Final Evaluation"}};
 const BANDS=[{max:2,en:"Insufficient",ar:"غير كافٍ",col:"#D64545",d:"Does not meet the basic requirements. Significant development needed."},
-{max:4,en:"Below Expectations",ar:"دون المتوقع",col:"#E07B24",d:"Limited ability; major errors or gaps are present."},
-{max:6,en:"Satisfactory",ar:"مُرضٍ",col:"#C99A00",d:"Meets the basic standard with some inconsistencies; further refinement required."},
+{max:4,en:"Below Expectations",ar:"دون المتوقع",col:"#D26F1A",d:"Limited ability; major errors or gaps are present."},
+{max:6,en:"Satisfactory",ar:"مُرضٍ",col:"#B08900",d:"Meets the basic standard with some inconsistencies; further refinement required."},
 {max:8,en:"Good to Very Good",ar:"جيد إلى جيد جداً",col:"#0E9E91",d:"Competent and consistent performance with only minor weaknesses."},
 {max:9,en:"Exceptional",ar:"استثنائي",col:"#6A4CE0",d:"Outstanding performance that exceeds expectations at this level."}];
 const CEFR=["A1","A2","B1","B2","C1","C2"];
@@ -367,11 +407,14 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const f1=x=>x==null||isNaN(x)?"–":(Math.round(x*10)/10).toFixed(1);
 const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
 let saveWarned=false;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));S._saved=Date.now()}catch(e){if(!saveWarned){saveWarned=true;alertBar("This browser is not saving data (private mode or storage full). Download a backup from the Class page so nothing is lost.")}}}
+function save(noMark){if(!noMark)S.changedAt=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(!saveWarned){saveWarned=true;alertBar("This browser is not saving data (private mode or storage full). Download a backup from the Class page so nothing is lost.")}}}
 function alertBar(m){setTimeout(()=>toast(m),300)}
-function fixStu(s){s.scores=s.scores||{};s.notes=s.notes||{};s.rec=s.rec||{};s.rem=s.rem||{str:"",dev:"",next:""};s.src=s.src||{};s.lab=s.lab||{};["errors","vocab","pron","recs"].forEach(k=>s.lab[k]=Array.isArray(s.lab[k])?s.lab[k]:[]);s.status=s.status||"draft";
+function fixStu(s){s.scores=s.scores||{};s.notes=s.notes||{};s.rec=s.rec||{};s.rem=s.rem||{str:"",dev:"",next:""};s.src=s.src||{};s.lab=s.lab||{};["errors","vocab","pron","recs"].forEach(k=>s.lab[k]=Array.isArray(s.lab[k])?s.lab[k]:[]);s.status=s.status==="approved"?"approved":"draft";s.id=s.id||uid();s.name=String(s.name||"Student");s.topic=String(s.topic||"");s.time=String(s.time||"");["str","dev","next"].forEach(k=>s.rem[k]=String(s.rem[k]||""));
  C.forEach(c=>{const v=s.scores[c.id];if(v===""||v==null)delete s.scores[c.id];else{s.scores[c.id]=Math.max(1,Math.min(9,Math.round(+v)));if(!s.src[c.id])s.src[c.id]="teacher"}});return s}
-S.groups.forEach(g=>{g.students=(g.students||[]).map(fixStu)});
+function fixGroup(g){g.id=g.id||uid();g.name=String(g.name||"Class");if(!LEVELS[g.level])g.level="L6";g.date=g.date||new Date().toISOString().slice(0,10);g.assessor=String(g.assessor||"Mr. Mohammed Y. Al-Mudhafar");g.weight=[0,.1,.2,.3].includes(+g.weight)?+g.weight:0;g.target=+g.target>0?Math.min(60,+g.target):7;g.students=(Array.isArray(g.students)?g.students:[]).filter(s=>s&&typeof s==="object").map(fixStu);return g}
+S.groups=(Array.isArray(S.groups)?S.groups:[]).filter(g=>g&&typeof g==="object").map(fixGroup);
+const dirty=()=>!!S.changedAt&&(!S.lastBackup||S.changedAt>S.lastBackup);
+addEventListener("storage",e=>{if(e.key!==KEY||!e.newValue)return;try{const n=JSON.parse(e.newValue);if(n&&Array.isArray(n.groups)){n.groups=n.groups.map(fixGroup);S=n;render();toast("Updated with changes from another tab")}}catch(_){}});
 function G(){return S.groups.find(g=>g.id===S.cur)||null}
 function stu(){const g=G();return g?g.students.find(s=>s.id===curStu)||null:null}
 function newStudent(name){return fixStu({id:uid(),name:name.trim(),topic:"",time:""})}
@@ -381,7 +424,7 @@ function band(x){if(x==null)return null;const r=Math.min(9,Math.max(1,Math.round
 function tier(x){const r=Math.round(x);return TIERS.find(t=>r<=t.max)}
 function cefr(a){if(a==null)return null;return a>=8.5?"C2":a>=7?"C1":a>=5.5?"B2":a>=4?"B1":a>=3?"A2":"A1"}
 function calc(st,g){g=g||G();const r={};let n=0;
- ["A","B","C"].forEach(k=>{const v=C.filter(c=>c.sec===k).map(c=>st.scores[c.id]).filter(x=>x!=null);n+=v.length;r[k]=v.length?avg(v):null});
+ ["A","B","C"].forEach(k=>{const v=C.filter(c=>c.sec===k).map(c=>st.scores[c.id]).filter(x=>x!=null);n+=v.length;r["n"+k]=v.length;r[k]=v.length?avg(v):null});
  r.n=n;r.done=n===15;r.ov=(r.A!=null&&r.B!=null&&r.C!=null)?(r.A+r.B+r.C)/3:null;r.t27=r.ov!=null?r.A+r.B+r.C:null;
  const rv=[];REC.forEach(q=>{const v=st.rec[q.id];if(v!=null&&v!=="")rv.push(q.pct?+v:(+v)/9*100)});
  r.rec=rv.length?avg(rv):null;r.D=r.rec!=null?r.rec/100*9:null;
@@ -389,7 +432,7 @@ function calc(st,g){g=g||G();const r={};let n=0;
  r.fin=r.ov==null?null:(w&&r.rec!=null?(r.ov/9*100)*(1-w)+r.rec*w:r.ov/9*100);
  r.cefr=cefr(r.A);return r}
 function ranked(st){return C.filter(c=>st.scores[c.id]!=null).map((c,i)=>({c,s:st.scores[c.id],i:C.indexOf(c)}))}
-function strengths(st){return ranked(st).sort((a,b)=>b.s-a.s||a.i-b.i).slice(0,3)}
+function strengths(st){const p=new Set(priorities(st).map(x=>x.c.id));return ranked(st).filter(x=>!p.has(x.c.id)).sort((a,b)=>b.s-a.s||a.i-b.i).slice(0,3)}
 function priorities(st){return ranked(st).sort((a,b)=>a.s-b.s||a.i-b.i).slice(0,3)}
 
 /* ============ SOUND ============ */
@@ -412,12 +455,16 @@ function avCol(id){let h=0;for(const ch of id)h=(h*31+ch.charCodeAt(0))%997;retu
 
 function go(v){stopSpeak();if(v!=="eval"){const x=$("#dock video,#dock audio");x&&x.pause()}view=v;document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));render();window.scrollTo({top:0})}
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{sfx.tap();go(b.dataset.v)});
-$("#arBtn").onclick=()=>{S.ar=!S.ar;save();applyPrefs();sfx.tap()};
-$("#sndBtn").onclick=()=>{S.snd=!S.snd;save();applyPrefs();sfx.tap()};
+$("#arBtn").onclick=()=>{S.ar=!S.ar;save(true);applyPrefs();sfx.tap()};
+$("#sndBtn").onclick=()=>{S.snd=!S.snd;save(true);applyPrefs();sfx.tap()};
 function applyPrefs(){document.body.classList.toggle("noar",!S.ar);$("#arBtn").classList.toggle("off",!S.ar);$("#sndBtn").classList.toggle("off",!S.snd);$("#sndW").style.display=S.snd?"":"none";const g=G();$("#grpLabel").textContent=g?`${g.name} · ${LEVELS[g.level].t}`:"MYALM Education"}
 
 function render(){applyPrefs();if(view!=="eval")$(".scorebar")&&$(".scorebar").remove();
- ({class:vClass,eval:vEval,report:vReport,dash:vDash})[view]();dockUpdate()}
+ document.body.dataset.view=view;
+ ({class:vClass,eval:vEval,report:vReport,dash:vDash})[view]();dockUpdate();
+ const cs=stu();document.title=view==="report"&&cs?`${cs.name} – Final Evaluation Report`:"MYALM Final Evaluation Studio";
+ app.querySelectorAll(".ar").forEach(e=>e.lang="ar")}
+function bandTag(v,short){const b=band(v);return b?`<span class="bt"><span class="dot" style="background:${b.col}"></span>${short?"":v+"/9 · "}${b.en}</span>`:`<span class="bt" style="color:var(--mute)">Not rated</span>`}
 /* ---- persistent recording player (outside #app so scoring never reloads the video) ---- */
 let dockFor=null;
 function dockUpdate(){const d=$("#dock"),m=view==="eval"&&curStu?media[curStu]:null;
@@ -433,6 +480,7 @@ $("#mediaIn").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f||!c
 /* ============ CLASS VIEW ============ */
 function vClass(){const g=G();
  let h=`<h2>Class & Students</h2>`+hint("Create a class, set the level, then add your students. Everything is saved on this device.","أنشئ صفاً، اختر المستوى، ثم أضف أسماء الطلاب. كل شيء يُحفظ على هذا الجهاز.");
+ h+=helpCard()+importCard();
  h+=`<div class="card"><div class="row"><label class="f" style="flex:1;min-width:200px">Class / group<select id="gSel">${S.groups.map(x=>`<option value="${x.id}" ${x.id===S.cur?"selected":""}>${esc(x.name)} — ${LEVELS[x.level].t}</option>`).join("")||"<option>No class yet</option>"}</select></label>
  <button class="btn teal" id="gNew">+ New class</button>${g?`<button class="btn ghost" id="gDel">Delete class</button>`:""}</div></div>`;
  if(!g){h+=`<div class="card empty"><h3>Welcome to your Final Evaluation Studio</h3><p>Start a class, or load a demo class to see how reports look.</p><div class="row" style="justify-content:center"><button class="btn teal" id="gNew2">+ New class</button><button class="btn sun" id="demo">Load demo class</button></div></div>`;app.innerHTML=h;bindClass();return}
@@ -449,12 +497,12 @@ function vClass(){const g=G();
  <div style="margin-top:12px">${g.students.length?g.students.map(s=>{const r=calc(s,g),b=band(r.ov);return `<div class="st"><div class="av" style="background:${avCol(s.id)}">${esc(initials(s.name))}</div>
  <div style="min-width:0;flex:1"><div class="nm">${esc(s.name)}</div><div class="meta row" style="gap:8px"><span class="prog"><i style="width:${r.n/15*100}%"></i></span>${r.n}/15 rated${s.topic?" · "+esc(s.topic):""}</div></div>
  ${statPill(s)}${r.ov!=null?`<span class="badge"><span class="dot" style="background:${b.col}"></span>${f1(r.ov)}/9 · ${b.en}</span>`:`<span class="badge">Not finished</span>`}
- <button class="btn sm" data-ev="${s.id}">Evaluate</button><button class="btn sm violet" data-rp="${s.id}" ${r.ov==null?"disabled style='opacity:.4'":""}>Report</button><button class="btn sm ghost" data-rm="${s.id}" aria-label="Remove">✕</button></div>`}).join(""):`<p class="empty">No students yet.</p>`}</div></div>`;
+ <button class="btn sm" data-ev="${s.id}">Evaluate</button><button class="btn sm violet" data-rp="${s.id}" ${r.ov==null?"disabled style='opacity:.4'":""}>Report</button><button class="btn sm ghost" data-rn="${s.id}" aria-label="Rename" data-tip="Rename student">✎</button><button class="btn sm ghost" data-rm="${s.id}" aria-label="Remove">✕</button></div>`}).join(""):`<p class="empty">No students yet.</p>`}</div></div>`;
  h+=`<div class="card" style="border:2px solid #DCD3FF"><h3>AI evaluations from recordings</h3>${hint("Send the presentation recordings to Claude in the MYALM project chat. Claude returns an AI evaluation file (.json). Import it here: scores, evidence, error corrections and recommendations arrive as a DRAFT for you to review, edit and approve.","أرسل تسجيلات العروض إلى Claude، ثم استورد ملف التقييم هنا. يصل كمسودة تراجعها وتعدّلها ثم توافق عليها.")}
  <div class="row"><button class="btn violet" id="aiFile">Import AI evaluation file</button><button class="btn ghost" id="aiPasteBtn">Paste AI evaluation text</button>
  <label class="row" style="gap:6px;font-size:14px"><input type="checkbox" id="aiOver"> Replace my own scores too</label></div>
  <div id="aiPasteBox" style="display:none;margin-top:10px"><textarea id="aiPaste" placeholder="Paste the AI evaluation JSON here" style="min-height:120px;font-family:monospace;font-size:12px"></textarea><button class="btn violet" id="aiPasteGo" style="margin-top:6px">Import</button></div></div>`;
- h+=`<div class="card"><h3>Backup</h3><p class="hint" style="margin:0 0 8px">Last backup downloaded: <b>${S.lastBackup?new Date(S.lastBackup).toLocaleString("en-GB"):"never"}</b>. Results are saved automatically in this browser; download a backup after each session to keep them safe.</p>${hint("Save a backup file to move your classes to another device, or restore one.","احفظ نسخة احتياطية لنقل صفوفك إلى جهاز آخر أو استرجاعها.")}<div class="row"><button class="btn ghost" id="bk">Download backup (.json)</button><button class="btn ghost" id="rs">Restore backup</button><button class="btn sun" id="demo">Add demo class</button></div></div>`;
+ h+=`<div class="card"><h3>Backup</h3><p class="hint" style="margin:0 0 8px">Last backup downloaded: <b>${S.lastBackup?new Date(S.lastBackup).toLocaleString("en-GB"):"never"}</b>.${dirty()?` <b style="color:#8A5A00">You have changes that are not in a backup yet.</b>`:""} Results are saved automatically in this browser; download a backup after each session to keep them safe.</p>${hint("Save a backup file to move your classes to another device, or restore one.","احفظ نسخة احتياطية لنقل صفوفك إلى جهاز آخر أو استرجاعها.")}<div class="row"><button class="btn ghost" id="bk">Download backup (.json)</button><button class="btn ghost" id="rs">Restore backup</button><button class="btn sun" id="demo">Add demo class</button></div></div>${appFooter()}`;
  app.innerHTML=h;bindClass()}
 function bindClass(){const g=G(),on=(id,ev,fn)=>{const e=$("#"+id);if(e)e[ev]=fn};
  on("gSel","onchange",e=>{S.cur=e.target.value;save();render()});
@@ -462,39 +510,65 @@ function bindClass(){const g=G(),on=(id,ev,fn)=>{const e=$("#"+id);if(e)e[ev]=fn
  on("gNew","onclick",nw);on("gNew2","onclick",nw);
  on("gDel","onclick",()=>{if(!confirm(`Delete the class "${g.name}" and all its evaluations?`))return;S.groups=S.groups.filter(x=>x.id!==g.id);S.cur=S.groups[0]?S.groups[0].id:null;save();render()});
  document.querySelectorAll("#demo").forEach(b=>b.onclick=demo);
+ on("impX","onclick",()=>{lastImport=null;render()});
  if(!g)return;
- const bindF=(id,k,num)=>on(id,"onchange",e=>{g[k]=num?+e.target.value:e.target.value;save();applyPrefs();if(k==="level"||k==="weight")render()});
+ const bindF=(id,k,num)=>on(id,"onchange",e=>{g[k]=num?+e.target.value:e.target.value;fixGroup(g);save();applyPrefs();if(k==="level"||k==="weight"||k==="target"||!e.target.value)render()});
  bindF("gName","name");bindF("gLevel","level");bindF("gDate","date");bindF("gAss","assessor");bindF("gW","weight",1);bindF("gTarget","target",1);
  on("addN","onclick",()=>{const v=$("#names").value.split(/\n|,/).map(x=>x.trim()).filter(Boolean);if(!v.length)return toast("Type at least one name");v.forEach(n=>g.students.push(newStudent(n)));save();sfx.ok();render()});
  app.querySelectorAll("[data-ev]").forEach(b=>b.onclick=()=>{curStu=b.dataset.ev;sec="A";active=0;go("eval")});
  app.querySelectorAll("[data-rp]").forEach(b=>b.onclick=()=>{curStu=b.dataset.rp;go("report")});
+ app.querySelectorAll("[data-rn]").forEach(b=>b.onclick=()=>{const s=g.students.find(x=>x.id===b.dataset.rn),n=prompt("Student name",s.name);if(n&&n.trim()){s.name=n.trim();save();render()}});
  app.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{const s=g.students.find(x=>x.id===b.dataset.rm);if(confirm(`Remove ${s.name}?`)){g.students=g.students.filter(x=>x!==s);save();render()}});
- on("bk","onclick",()=>{S.lastBackup=Date.now();save();download(`MYALM_evaluations_backup_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(S,null,1),"application/json");render()});
+ on("bk","onclick",()=>{S.lastBackup=Date.now();save(true);download(`MYALM_evaluations_backup_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(S,null,1),"application/json");render()});
  on("rs","onclick",()=>$("#fileIn").click());
  on("aiFile","onclick",()=>$("#aiIn").click());
  on("aiPasteBtn","onclick",()=>{const b=$("#aiPasteBox");b.style.display=b.style.display==="none"?"block":"none"});
  on("aiPasteGo","onclick",()=>importAI($("#aiPaste").value,$("#aiOver").checked))}
 $("#aiIn").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const over=$("#aiOver")&&$("#aiOver").checked;const r=new FileReader();r.onload=()=>importAI(r.result,over);r.readAsText(f)};
 function statPill(s){const r=calc(s);if(s.status==="approved")return `<span class="stat ap">✓ Approved</span>`;if(s.ai||Object.values(s.src||{}).some(v=>v==="ai"||v==="auto"))return `<span class="stat dr">AI draft · review</span>`;return r.n?`<span class="stat ip">In progress</span>`:""}
+function findStu(g,name){const n=normName(name);let s=g.students.find(x=>normName(x.name)===n);if(s)return s;const t=n.split(" ").filter(Boolean);if(!t.length)return null;
+ const c=g.students.filter(x=>{const u=normName(x.name).split(" ").filter(Boolean),a=t.length<=u.length?t:u,b=t.length<=u.length?u:t;return a.length&&a.every(w=>b.includes(w))});return c.length===1?c[0]:null}
+let lastImport=null;
+function importCard(){if(!lastImport)return"";return `<div class="card" style="border:2px solid #DCD3FF"><div class="row"><h3 style="margin:0">Last AI import — check the matching</h3><span class="sp"></span><button class="btn sm ghost" id="impX">Dismiss</button></div><div class="scroll"><table class="tbl" style="margin-top:6px"><thead><tr><th>Name in the file</th><th>Result</th><th>Scores drafted</th></tr></thead><tbody>${lastImport.map(x=>`<tr><td>${esc(x.file)}</td><td>${esc(x.how)}</td><td>${x.n}</td></tr>`).join("")}</tbody></table></div></div>`}
+function helpCard(){return `<details class="card help"><summary>How to use the studio (4 steps)</summary><ol>
+ <li><b>Class:</b> create a class, choose the level and add the students' names.</li>
+ <li><b>AI draft (optional):</b> send the recordings to Claude in your MYALM project, then import the AI evaluation file here.</li>
+ <li><b>Evaluate:</b> play the recording, check each score (tap, or keys 1–9), edit the Language Lab and the remarks, then press Approve. Approved evaluations are locked until you reopen them.</li>
+ <li><b>Report:</b> print or save as PDF, share the summary on WhatsApp, then download a backup.</li></ol>
+ <p class="hint" style="margin:0">Data is saved in this browser only. The offline file and the web link keep separate data: use Backup and Restore to move between them or to another device.<span class="ar">تُحفظ البيانات في هذا المتصفح فقط. استخدم النسخة الاحتياطية للانتقال بين الملف والرابط أو إلى جهاز آخر.</span></p></details>`}
+function appFooter(){return `<div class="appf"><span style="color:#8A8F9C">MR. MOHAMMED YAHYA AL-MUDHAFAR |</span> <span style="color:var(--gold)">MYALM EDUCATION</span><small>Final Evaluation Studio v${VER}</small></div>`}
 function importAI(text,over){let d;try{const tx=String(text).trim(),i=tx.search(/[\[{]/),j=Math.max(tx.lastIndexOf("}"),tx.lastIndexOf("]"));d=JSON.parse(tx.slice(i,j+1))}catch(e){return toast("Could not read this file — it is not valid AI evaluation JSON")}
- const list=Array.isArray(d)?d:(d.students||[d]);if(!list.length||!list[0].name)return toast("No students found in this file");
- let g=G();if(!g){g={id:uid(),name:d.class||"AI evaluated class",level:LEVELS[d.level]?d.level:"L6",date:new Date().toISOString().slice(0,10),assessor:"Mr. Mohammed Y. Al-Mudhafar",weight:0,target:+d.target||7,students:[]};S.groups.push(g);S.cur=g.id}
- let added=0,upd=0,crit=0;
- list.forEach(a=>{if(!a||!a.name)return;let s=g.students.find(x=>normName(x.name)===normName(a.name));if(!s){s=newStudent(a.name);g.students.push(s);added++}else upd++;
-  s.ai={scores:{},metrics:a.metrics||null,transcript:a.transcript||"",summary:a.summary||"",recording:a.recording||"",audioOnly:!!a.audioOnly,generated:d.generated||new Date().toISOString().slice(0,10)};
-  if(a.topic&&!s.topic)s.topic=a.topic;if(a.duration&&!s.time)s.time=a.duration;
-  C.forEach(c=>{let v=a.scores&&a.scores[c.id];if(v==null)return;if(typeof v!=="object")v={score:v};const sc=v.score==null||v.score===""?null:Math.max(1,Math.min(9,Math.round(+v.score)));
+ if(d&&d.groups)return toast("This is a backup file — use Restore backup instead");
+ const list=(Array.isArray(d)?d:(d&&d.students)||[d]).filter(a=>a&&typeof a==="object"&&a.name);if(!list.length)return toast("No students found in this file");
+ let g=G();if(!g){g=fixGroup({name:d.class||"AI evaluated class",level:d.level,target:d.target});S.groups.push(g);S.cur=g.id}
+ const known=list.filter(a=>findStu(g,a.name));
+ if(g.students.length&&!known.length&&!confirm(`None of the ${list.length} student(s) in this file are in "${g.name}".\nAdd them to this class as new students?`))return;
+ const appr=known.filter(a=>findStu(g,a.name).status==="approved");let skipAp=false;
+ if(appr.length&&!confirm(`${appr.length} student(s) are already approved (${appr.map(a=>a.name).join(", ")}).\nOK = reopen them as drafts with this AI evaluation.\nCancel = leave approved students untouched.`))skipAp=true;
+ const log=[];let crit=0;
+ list.forEach(a=>{let s=findStu(g,a.name),how;
+  if(s&&s.status==="approved"&&skipAp){log.push({file:a.name,how:"skipped (already approved)",n:0});return}
+  if(!s){s=newStudent(String(a.name));g.students.push(s);how="added as a new student"}else how=normName(s.name)===normName(a.name)?"matched":`matched to “${s.name}”`;
+  const c0=crit;
+  s.ai={scores:{},metrics:a.metrics&&typeof a.metrics==="object"?a.metrics:null,transcript:String(a.transcript||""),summary:String(a.summary||""),recording:String(a.recording||""),audioOnly:!!a.audioOnly,generated:String((d&&d.generated)||new Date().toISOString().slice(0,10))};
+  if(a.topic&&!s.topic)s.topic=String(a.topic);if(a.duration&&!s.time)s.time=String(a.duration);
+  C.forEach(c=>{let v=a.scores&&a.scores[c.id];if(v==null)return;if(typeof v!=="object")v={score:v};const num=+v.score,sc=v.score==null||v.score===""||isNaN(num)?null:Math.max(1,Math.min(9,Math.round(num)));
    s.ai.scores[c.id]={score:sc,confidence:v.confidence||"",evidence:v.evidence||"",quote:v.quote||""};
    if(sc!=null&&(over||s.scores[c.id]==null||s.src[c.id]!=="teacher")){s.scores[c.id]=sc;s.src[c.id]="ai";crit++}});
-  const L=s.lab,arr=x=>Array.isArray(x)?x:[];
-  L.errors=arr(a.errors).map(e=>({type:e.type||"Grammar",said:e.said||"",better:e.better||"",why:e.why||"",ar:e.ar||""})).filter(e=>e.said||e.better);
-  L.vocab=arr(a.vocab).map(e=>({used:e.used||"",better:Array.isArray(e.better)?e.better.join(", "):(e.better||""),example:e.example||""})).filter(e=>e.used||e.better);
-  L.pron=arr(a.pronunciation||a.pron).map(e=>({word:e.word||"",tip:e.tip||e.issue||""})).filter(e=>e.word);
-  L.recs=arr(a.recommendations||a.recs).map(e=>({area:e.area||"",action:e.action||"",example:e.example||""})).filter(e=>e.action);
-  const rm=a.remarks||{};["str","dev","next"].forEach(k=>{if(rm[k]&&(over||!s.rem[k]))s.rem[k]=rm[k]});
-  if(!s.rem.str&&!s.rem.dev)autoRem(s);s.status="draft"});
- save();sfx.done();toast(`AI evaluation imported: ${upd} updated, ${added} new student(s), ${crit} scores drafted. Please review and approve.`);render()}
-$("#fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.groups)throw 0;let n=0;d.groups.forEach(x=>{if(!S.groups.some(y=>y.id===x.id)){S.groups.push(x);n++}});if(!S.cur&&S.groups[0])S.cur=S.groups[0].id;save();toast(`Restored ${n} class(es)`);render()}catch(err){toast("That file is not a valid backup")}};r.readAsText(f);e.target.value=""};
+  const L=s.lab,arr=x=>Array.isArray(x)?x.filter(e=>e&&typeof e==="object"):[];
+  if(over||!labCount(s)){
+   L.errors=arr(a.errors).map(e=>({type:e.type||"Grammar",said:e.said||"",better:e.better||"",why:e.why||"",ar:e.ar||""})).filter(e=>e.said||e.better);
+   L.vocab=arr(a.vocab).map(e=>({used:e.used||"",better:Array.isArray(e.better)?e.better.join(", "):(e.better||""),example:e.example||""})).filter(e=>e.used||e.better);
+   L.pron=arr(a.pronunciation||a.pron).map(e=>({word:e.word||"",tip:e.tip||e.issue||""})).filter(e=>e.word);
+   L.recs=arr(a.recommendations||a.recs).map(e=>({area:e.area||"",action:e.action||"",example:e.example||""})).filter(e=>e.action)}
+  else how+="; your Language Lab items were kept";
+  const rm=a.remarks||{};["str","dev","next"].forEach(k=>{if(rm[k]&&(over||!s.rem[k]))s.rem[k]=String(rm[k])});
+  if(!s.rem.str&&!s.rem.dev)autoRem(s);s.status="draft";log.push({file:a.name,how,n:crit-c0})});
+ lastImport=log;save();sfx.done();toast(`AI evaluation imported for ${log.filter(x=>!x.how.startsWith("skipped")).length} student(s). Review, then approve.`);if(view!=="class")go("class");else render()}
+$("#fileIn").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const r=new FileReader();r.onload=()=>{let d;try{d=JSON.parse(r.result);if(!d||!Array.isArray(d.groups))throw 0}catch(err){return toast(d&&(d.students||d.type)?"This is an AI evaluation file — use Import AI evaluation instead":"That file is not a valid backup")}
+ let n=0;const dup=[];d.groups.forEach(x=>{if(!x||typeof x!=="object")return;fixGroup(x);const i=S.groups.findIndex(y=>y.id===x.id);if(i<0){S.groups.push(x);n++}else dup.push([i,x])});
+ let rep=0;if(dup.length&&confirm(`${dup.length} class(es) in this backup already exist on this device (${dup.map(x=>x[1].name).join(", ")}).\nOK = replace them with the backup version.\nCancel = keep the versions on this device.`)){dup.forEach(([i,x])=>S.groups[i]=x);rep=dup.length}
+ lastImport=null;if(!G()&&S.groups[0])S.cur=S.groups[0].id;save();toast(`Restore finished: ${n} class(es) added, ${rep} replaced`);render()};r.readAsText(f)};
 function demo(){const g={id:uid(),name:"Demo Group (sample)",level:"L6",date:new Date().toISOString().slice(0,10),assessor:"Mr. Mohammed Y. Al-Mudhafar",weight:.2,target:7,students:[]};
  const sets=[["Sara Ali",[7,7,6,8,7,8,7,8,9,8,7,6,8,7,7],[96,8,9,8],"Social media and young people"],["Hassan Kareem",[5,6,5,5,6,4,5,6,7,5,6,5,5,6,5],[85,6,7,6],"Climate change in Iraq"],["Zahraa Mohammed",[8,8,7,7,8,9,8,7,8,9,8,8,9,8,8],[100,9,9,9],"Women in technology"],["Ali Hussein",[4,5,4,6,4,5,6,5,4,4,5,3,4,5,5],[70,5,6,6],"Football and teamwork"]];
  sets.forEach(([n,sc,rc,tp])=>{const s=newStudent(n);s.topic=tp;s.status="approved";s.approvedAt=g.date;C.forEach((c,i)=>{s.scores[c.id]=sc[i];s.src[c.id]="teacher"});REC.forEach((q,i)=>s.rec[q.id]=rc[i]);autoRem(s);g.students.push(s)});
@@ -502,7 +576,7 @@ function demo(){const g={id:uid(),name:"Demo Group (sample)",level:"L6",date:new
 
 /* ============ EVALUATE VIEW ============ */
 function secList(){return["A","B","C","D","L","R"]}
-function vEval(){const g=G();
+function vEval(){app.querySelectorAll("details[data-d]").forEach(d=>d.open?openD.add(d.dataset.d):openD.delete(d.dataset.d));const g=G();
  if(!g||!g.students.length){app.innerHTML=`<div class="card empty"><h3>No students to evaluate yet</h3><p>Create a class and add students first.</p><button class="btn teal" onclick="go('class')">Go to Class</button></div>`;return}
  if(!stu())curStu=g.students[0].id;const s=stu(),r=calc(s,g);
  let h=`<div class="card"><div class="row"><label class="f" style="flex:1;min-width:190px">Student<select id="sSel">${g.students.map(x=>`<option value="${x.id}" ${x.id===s.id?"selected":""}>${esc(x.name)} (${calc(x,g).n}/15)</option>`).join("")}</select></label>
@@ -512,17 +586,18 @@ function vEval(){const g=G();
  </div><div class="row" style="margin-top:10px">${statPill(s)||`<span class="stat ip">Not started</span>`}${s.time?`<span class="hint" style="margin:0">Speaking time: <b>${esc(s.time)}</b> (target ${g.target} min)</span>`:""}<span class="sp"></span>
  <button class="btn sm ghost" id="ldMedia">${media[s.id]?"Change recording":"Load recording (video/audio)"}</button>${media[s.id]?`<button class="btn sm teal" id="anA">${s.audio?"Re-run audio check":"Run audio check"}</button>`:""}
  ${s.status==="approved"?`<button class="btn sm ghost" id="unAp">Reopen for editing</button>`:`<button class="btn sm" id="apBtn">Approve evaluation ✓</button>`}</div>
+ ${s.status==="approved"?`<div class="aibox au" style="margin-top:10px"><b>Approved and locked.</b> Press “Reopen for editing” to change scores, notes or remarks.</div>`:""}
  ${s.ai?`<div class="aibox" style="margin-top:10px"><b>AI evaluation imported</b> (${esc(s.ai.generated||"")}${s.ai.recording?" · "+esc(s.ai.recording):""}). Purple boxes show the AI score and evidence for each criterion. Change any score or press <b>Confirm</b>, then approve.${s.ai.audioOnly?" <br><b>Audio-only recording:</b> eye contact, body language and visual aids need your own judgement.":""}${s.ai.summary?`<div style="margin-top:4px;color:var(--ink2)">${esc(s.ai.summary)}</div>`:""}</div>`:""}
  ${s.audio?audioBox(s,g):""}</div>`;
  h+=`<div class="secTabs">${secList().map(k=>{const L=k==="R"?{en:"Remarks & approve",col:"#1E2A5A"}:k==="L"?{en:"Language Lab",col:"#C77700"}:SEC[k];const sub=k==="R"?"":k==="L"?(labCount(s)||""):k==="D"?(r.rec!=null?Math.round(r.rec)+"%":"–"):f1(r[k]);return `<button data-sec="${k}" class="${sec===k?"on":""}"><span class="dot" style="background:${L.col}"></span>${k!=="R"&&k!=="L"?k+" · ":""}${L.en} <small>${sub}</small></button>`}).join("")}</div>`;
- h+=`<div class="bandkey">${BANDS.map((b,i)=>`<span style="background:${b.col}" data-tip="${b.d}">${["1–2","3–4","5–6","7–8","9"][i]} ${b.en}</span>`).join("")}</div>`;
+ h+=`<div class="bandkey">${BANDS.map((b,i)=>`<span data-tip="${b.d}"><i class="dot" style="background:${b.col}"></i>${["1–2","3–4","5–6","7–8","9"][i]} ${b.en}</span>`).join("")}</div>`;
  if(sec==="D")h+=evalD(s,g);else if(sec==="R")h+=evalR(s);else if(sec==="L")h+=evalL(s);else{
   h+=hint("Tap a score 1–9 for each criterion (keyboard: press 1–9, ↑ ↓ to move). Add a short note if you like.","اختر درجة من 1 إلى 9 لكل معيار، ويمكنك إضافة ملاحظة قصيرة.");
   C.filter(c=>c.sec===sec).forEach((c,i)=>{const v=s.scores[c.id],b=band(v);
-  h+=`<div class="card crit ${i===active?"act":""}" style="border-left-color:${SEC[c.sec].col}" data-ci="${i}"><div class="hd"><div class="num" style="background:${SEC[c.sec].col}">${C.indexOf(c)+1}</div><div style="flex:1;min-width:0"><h3>${c.en}</h3><div class="ar" style="color:var(--mute);font-size:14px;text-align:left">${c.ar}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${b?`<span class="blab" style="color:${b.col}">${v}/9 · ${b.en}</span>`:""}${srcBadge(s,c.id)}</div></div>
-  <details><summary>Descriptors</summary><ul>${c.b.map(x=>`<li>${x}</li>`).join("")}</ul></details>
+  h+=`<div class="card crit ${i===active?"act":""}" style="border-left-color:${SEC[c.sec].col}" data-ci="${i}"><div class="hd"><div class="num" style="background:${SEC[c.sec].col}">${C.indexOf(c)+1}</div><div style="flex:1;min-width:0"><h3>${c.en}</h3><div class="ar" style="color:var(--mute);font-size:14px;text-align:left">${c.ar}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${b?`<span class="blab">${bandTag(v)}</span>`:""}${srcBadge(s,c.id)}</div></div>
+  <details data-d="${c.id}" ${openD.has(c.id)?"open":""}><summary>Descriptors and band anchors</summary><ul>${c.b.map(x=>`<li>${x}</li>`).join("")}</ul><div class="anch"><b>5–6:</b> ${c.u[0]}<br><b>7–8:</b> ${c.u[1]}<br><b>9:</b> ${c.u[2]}</div></details>
   <div class="q">✔ Key question: ${c.q}</div>
-  <div class="scale">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-c="${c.id}" data-v="${n}" class="${v===n?"sel":""}" style="${v===n?"background:"+band(n).col:""}" aria-label="Score ${n}">${n}</button>`).join("")}</div>
+  <div class="scale">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-c="${c.id}" data-v="${n}" class="${v===n?"sel":""}" style="${v===n?"background:"+band(n).col:""}" aria-label="Score ${n}" aria-pressed="${v===n}">${n}</button>`).join("")}</div>
   ${aiBox(s,c)}
   <input class="note" data-note="${c.id}" value="${esc(s.notes[c.id])}" placeholder="Evidence / note (optional) — e.g. great hook, read from slides">
   </div>`});
@@ -530,7 +605,13 @@ function vEval(){const g=G();
   const nx=secList()[secList().indexOf(sec)+1];h+=`<div class="row" style="justify-content:flex-end">${pend?`<button class="btn violet" id="confSec">Confirm ${pend} AI/auto score(s) in this section</button>`:""}<button class="btn teal" data-sec="${nx}">Next: ${SEC[nx].en} →</button></div>`}
  app.innerHTML=h;
  let sb=$(".scorebar");if(!sb){sb=document.createElement("div");sb.className="scorebar";document.body.appendChild(sb)}
- sb.innerHTML=scoreBar(r);bindEval(s,g)}
+ sb.innerHTML=scoreBar(r);bindEval(s,g);afterEval(s)}
+const openD=new Set();
+function afterEval(s){app.querySelectorAll("details[data-d]").forEach(d=>d.ontoggle=()=>{d.open?openD.add(d.dataset.d):openD.delete(d.dataset.d)});
+ if(s.status==="approved")app.querySelectorAll(".scale button,[data-note],[data-rem],[data-lk],[data-new],[data-ladd],[data-ldel],[data-rec],[data-recq],[data-conf],#auto,#apAud,#confSec,#topic,#useDur,#tSv,#anA").forEach(e=>e.disabled=true)}
+function checklist(s){const g=G(),r=calc(s,g),un=C.filter(c=>s.scores[c.id]==null),pc=pendingCount(s);
+ const it=[[r.done,r.done?"All 15 criteria rated":`Not rated yet: ${un.map(c=>c.s).join(", ")} (unrated criteria are left out of the averages)`],[!pc,pc?`${pc} AI/audio score(s) not checked one by one — approving accepts them as they are`:"Every score set or confirmed by you"],[!!(s.rem.str&&s.rem.dev&&s.rem.next),"Remarks written: strengths, development, next steps"],[!!s.topic,"Presentation topic recorded"],[!!s.time,"Speaking time recorded"],[labCount(s)>0,"Language Lab has corrections or recommendations"]];
+ return `<ul class="chk">${it.map(([ok,x])=>`<li class="${ok?"ok":"no"}">${ok?"✓":"!"} ${esc(x)}</li>`).join("")}</ul>`}
 function scoreBar(r){const b=band(r.ov);return `<span class="k"><small>A Lang.</small><b>${f1(r.A)}</b></span><span class="k"><small>B Pres.</small><b>${f1(r.B)}</b></span><span class="k"><small>C Overall</small><b>${f1(r.C)}</b></span>
  <span class="k x"><small>Total /27</small><b>${f1(r.t27)}</b></span><span class="k" style="background:rgba(255,255,255,.12);border-radius:10px;padding:2px 10px"><small>Score /9</small><b>${f1(r.ov)}</b></span>
  <span class="k"><small>Band</small><b style="font-size:13px">${b?b.en:"–"}</b></span><span class="k"><small>CEFR est.</small><b>${r.cefr||"–"}</b></span><span class="k"><small>Final</small><b>${r.fin!=null?Math.round(r.fin)+"%":"–"}</b></span><span class="k x"><small>Rated</small><b>${r.n}/15</b></span>`}
@@ -546,11 +627,11 @@ function evalR(s){const r=calc(s);
  <label class="f" style="margin-top:10px">Areas requiring development<textarea data-rem="dev">${esc(s.rem.dev)}</textarea></label>
  <label class="f" style="margin-top:10px">Recommended next steps<textarea data-rem="next">${esc(s.rem.next)}</textarea></label></div>
  ${r.done?"":`<p class="hint">Note: ${15-r.n} criteria are still unrated.</p>`}
- <div class="card" style="border:2px solid ${s.status==="approved"?"#0E9E91":"#E0A800"}"><div class="row">${statPill(s)||`<span class="stat ip">Not approved</span>`}<span class="hint" style="margin:0;flex:1">${s.status==="approved"?`Approved on ${esc(fmtDate(s.approvedAt))}. The report no longer shows the DRAFT banner.`:`${pendingCount(s)?pendingCount(s)+" score(s) still come from AI/auto and are not confirmed. ":""}Approving confirms all scores as your final decision and removes the DRAFT banner from the report.`}</span>
+ <div class="card" style="border:2px solid ${s.status==="approved"?"#0E9E91":"#E0A800"}"><h3 style="margin-top:0">Ready to approve?</h3>${checklist(s)}<div class="row">${statPill(s)||`<span class="stat ip">Not approved</span>`}<span class="hint" style="margin:0;flex:1">${s.status==="approved"?`Approved on ${esc(fmtDate(s.approvedAt))}. The report no longer shows the DRAFT banner.`:`${pendingCount(s)?pendingCount(s)+" score(s) still come from AI/auto and are not confirmed. ":""}Approving confirms all scores as your final decision and removes the DRAFT banner from the report.`}</span>
  ${s.status==="approved"?`<button class="btn ghost" id="unAp2">Reopen</button>`:`<button class="btn" id="apBtn2">Approve evaluation ✓</button>`}</div></div>`}
-function autoRem(s){const st=strengths(s),pr=priorities(s);if(!st.length)return;const first=s.name.split(" ")[0];
- s.rem.str=`${first} ${st.map(x=>x.c.p).join(", ").replace(/, ([^,]*)$/," and $1")}. Best results: ${st.map(x=>`${x.c.s} (${x.s}/9)`).join(", ")}.`;
- s.rem.dev=pr.map(x=>`• ${x.c.en} (${x.s}/9): ${x.c.n}.`).join("\n");
+function autoRem(s){const st=strengths(s),pr=priorities(s);if(!st.length&&!pr.length)return;const first=s.name.split(" ")[0],hi=st.filter(x=>x.s>=6),join=a=>a.length>1?a.slice(0,-1).join("; ")+"; and "+a[a.length-1]:a.join("");
+ s.rem.str=hi.length?`${first} ${join(hi.map(x=>x.c.p))}. Best results: ${st.map(x=>`${x.c.s} (${x.s}/9)`).join(", ")}.`:st.length?`${first}'s strongest areas so far are ${st.map(x=>`${x.c.s} (${x.s}/9)`).join(", ")}. They are the base to build on.`:"";
+ s.rem.dev=pr.map(x=>{const n=nextT(x.c,x.s);return `• ${x.c.en} (${x.s}/9) — ${x.s>=9?n.t:"to reach "+n.b+": "+n.t}`}).join("\n");
  s.rem.next=pr.map(x=>`• ${x.c.d[0]}`).join("\n")+`\n• Re-record a 3-minute talk in 4 weeks and self-assess it with this rubric.`}
 function srcBadge(s,cid){const x=s.src[cid];if(s.scores[cid]==null)return"";if(x==="ai")return `<span class="src">AI draft</span>`;if(x==="auto")return `<span class="src u">Audio auto</span>`;if((s.ai&&s.ai.scores[cid])||(s.audio&&s.audio.sug&&s.audio.sug[cid]))return `<span class="src t">✓ Reviewed</span>`;return""}
 function pendingCount(s){return C.filter(c=>s.scores[c.id]!=null&&s.src[c.id]!=="teacher").length}
@@ -577,12 +658,12 @@ function metricTiles(s){const m=(s.ai&&s.ai.metrics)||{},u=s.audio||{},T=[];
  const add=(v,l)=>{if(v!=null&&v!=="")T.push(`<div class="mt"><b>${esc(v)}</b><small>${l}</small></div>`)};
  add(m.wpm,"words / minute");add(m.words,"words spoken");add(m.speakingTime||(u.dur?fmtT(u.dur):null),"speaking time");add(m.fillers!=null?m.fillers:null,"fillers (um, uh…)");
  add(m.longPauses!=null?m.longPauses:(u.longP!=null?u.longP:null),"long pauses");add(m.lexicalVariety,"word variety (0–1)");add(m.avgSentence,"words / sentence");add(m.questions,"questions to audience");
- if(!m.wpm&&u.ratio!=null)add(Math.round(u.ratio*100)+"%","time speaking");if(u.pitchSt!=null)add(u.pitchSt.toFixed(1)+" st","voice range");
+ if(!m.wpm&&u.ratio!=null)add(Math.round(u.ratio*100)+"%","time speaking");if(u.pitchSt!=null)add(u.pitchSt.toFixed(1)+" st","pitch variation");
  let x=T.length?`<div class="mtiles">${T.join("")}</div>`:"";if(m.fillerWords)x+=`<div style="font-size:12px;color:var(--ink2)"><b>Fillers:</b> ${esc(m.fillerWords)}</div>`;if(m.linkers)x+=`<div style="font-size:12px;color:var(--ink2)"><b>Linkers used:</b> ${esc(m.linkers)}</div>`;return x}
 /* ---- offline audio check ---- */
-function audioBox(s,g){const u=s.audio;return `<div class="aibox au" style="margin-top:10px"><b>Audio check</b> of ${esc(u.file||"recording")}: length ${fmtT(u.dur)} (target ${g.target}:00) · speaking ${Math.round(u.ratio*100)}% of the time · ${u.longP} long pauses (≥1.5 s, longest ${u.longest.toFixed(1)} s) · voice range ${u.pitchSt!=null?u.pitchSt.toFixed(1)+" semitones":"n/a"}.
+function audioBox(s,g){const u=s.audio;return `<div class="aibox au" style="margin-top:10px"><b>Audio check</b> of ${esc(u.file||"recording")}: length ${fmtT(u.dur)} (target ${g.target}:00) · speaking ${Math.round(u.ratio*100)}% of the time · ${u.longP} long pauses (≥1.5 s, longest ${u.longest.toFixed(1)} s) · pitch variation ${u.pitchSt!=null?u.pitchSt.toFixed(1)+" semitones ("+(u.pitchSt<2.2?"rather flat":u.pitchSt<3?"some variety":"lively")+")":"n/a"}.
  <div class="row" style="margin-top:6px"><button class="btn sm teal" id="apAud">Use audio suggestions for empty criteria</button>${!s.time?`<button class="btn sm ghost" id="useDur">Use ${fmtT(u.dur)} as speaking time</button>`:""}</div><div style="font-size:12px;color:var(--ink2);margin-top:4px">Audio measures only hint at Fluency, Voice and Timing; language quality needs the AI evaluation or your own judgement.</div></div>`}
-async function analyseAudio(s,g){const m=media[s.id];if(!m)return toast("Load a recording first");toast("Analysing audio… (large videos can take a minute)");await new Promise(r=>setTimeout(r,60));
+async function analyseAudio(s,g){const m=media[s.id];if(!m)return toast("Load a recording first");if(m.file.size>450e6)return toast("This file is too large to analyse in the browser (over 450 MB). Use an audio-only or smaller copy for the audio check.");toast("Analysing audio… (large videos can take a minute)");await new Promise(r=>setTimeout(r,60));
  try{const buf=await m.file.arrayBuffer();const OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext;const ctx=new OAC(1,16000,16000);
   const ab=await new Promise((res,rej)=>{const p=ctx.decodeAudioData(buf,res,rej);if(p&&p.then)p.then(res,rej)});
   const sr=ab.sampleRate,ch=ab.numberOfChannels,N=ab.length,x=new Float32Array(N);for(let c=0;c<ch;c++){const d=ab.getChannelData(c);for(let i=0;i<N;i++)x[i]+=d[i]/ch}
@@ -603,7 +684,7 @@ async function analyseAudio(s,g){const m=media[s.id];if(!m)return toast("Load a 
   const sug={};
   sug.c12={score:dev<=.1?8:dev<=.2?7:dev<=.3?6:dev<=.45?5:dev<=.6?4:3,why:`length ${fmtT(dur)} vs target ${g.target}:00 (${Math.round(dev*100)}% off)`};
   sug.c1={score:ppm<=.5?8:ppm<=1?7:ppm<=2?6:ppm<=3?5:ppm<=4.5?4:3,why:`${ppm.toFixed(1)} long pauses per minute; speaking ${Math.round(ratio*100)}% of the time`};
-  if(pitchSt!=null)sug.c8={score:pitchSt<1.5?4:pitchSt<2.2?5:pitchSt<3?6:pitchSt<4?7:8,why:`voice range ≈ ${pitchSt.toFixed(1)} semitones (${pitchSt<2.2?"rather flat":pitchSt<3?"some variety":"lively"} intonation)`};
+  if(pitchSt!=null)sug.c8={score:pitchSt<1.5?4:pitchSt<2.2?5:pitchSt<3?6:pitchSt<4?7:8,why:`pitch variation ≈ ${pitchSt.toFixed(1)} semitones (${pitchSt<2.2?"rather flat":pitchSt<3?"some variety":"lively"} intonation)`};
   s.audio={file:m.name,dur,ratio,longP,longest,ppm,pitchSt,sug};save();sfx.ok();toast("Audio check done");render()}
  catch(e){console.warn(e);toast("This file's audio could not be decoded in this browser. Try Chrome, or an MP3/MP4/M4A file.")}}
 function fmtT(t){t=Math.floor(t);return `${String(Math.floor(t/60)).padStart(2,"0")}:${String(t%60).padStart(2,"0")}`}
@@ -641,7 +722,7 @@ function setScore(s,cid,v,kb){const before=calc(s).done;s.scores[cid]=v;s.src[ci
  const list=C.filter(c=>c.sec===sec),i=list.findIndex(c=>c.id===cid);active=Math.min(i+1,list.length-1);
  const r=calc(s);if(r.done&&!before){sfx.done();toast("All 15 criteria rated — open Remarks or the Report")}
  const y=window.scrollY;render();if(kb){const el=app.querySelector(`.crit[data-ci="${active}"]`);el&&el.scrollIntoView({behavior:"smooth",block:"center"})}else window.scrollTo(0,y)}
-document.addEventListener("keydown",e=>{if(view!=="eval"||sec==="D"||sec==="R")return;if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;const s=stu();if(!s)return;const list=C.filter(c=>c.sec===sec);
+document.addEventListener("keydown",e=>{if(view!=="eval"||!["A","B","C"].includes(sec)||e.ctrlKey||e.metaKey||e.altKey)return;if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;const s=stu();if(!s||s.status==="approved")return;const list=C.filter(c=>c.sec===sec);
  if(/^[1-9]$/.test(e.key)){e.preventDefault();setScore(s,list[active].id,+e.key,true)}
  else if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();active=Math.max(0,Math.min(list.length-1,active+(e.key==="ArrowDown"?1:-1)));render();const el=app.querySelector(`.crit[data-ci="${active}"]`);el&&el.scrollIntoView({behavior:"smooth",block:"center"})}});
 
@@ -654,7 +735,8 @@ function radar(s){const W=330,H=300,cx=W/2,cy=H/2+4,R=104,n=C.length;
  g+=`<polygon points="${vals.map((v,i)=>pt(i,v).join(",")).join(" ")}" fill="rgba(15,181,166,.18)" stroke="#0E9E91" stroke-width="2" stroke-linejoin="round"/>`;
  vals.forEach((v,i)=>{if(!v)return;const p=pt(i,v);g+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="${SEC[C[i].sec].col}" stroke="#fff" stroke-width="2" data-tip="${C[i].en}: ${v}/9 · ${band(v).en}"/>`});
  return `<svg viewBox="-48 -6 ${W+96} ${H+10}" width="100%" style="max-height:215px" role="img" aria-label="Radar chart of the 15 criteria">${g}</svg><div class="legend">${["A","B","C"].map(k=>`<span><span class="dot" style="background:${SEC[k].col}"></span>${k} ${SEC[k].en}</span>`).join("")}</div>`}
-function pageWrap(n,g,body){return `<section class="page"><div class="ph"><div class="pn">${n}</div><div class="tt"><span>${esc(LEVELS[g.level].t)} · Final Evaluation Report</span></div><img src="${$(".logo").src}" alt="MYALM Education"></div><div class="pbody">${body}</div><div class="pf"><span class="n">MR. MOHAMMED YAHYA AL-MUDHAFAR</span> <span class="n">|</span> <span class="m">MYALM EDUCATION</span></div></section>`}
+let curDraft=false;
+function pageWrap(n,g,body){return `<section class="page"><div class="ph"><div class="pn">${n}</div>${curDraft?`<span class="dtag">DRAFT</span>`:""}<div class="tt"><span>${esc(LEVELS[g.level].t)} · Final Evaluation Report</span></div><img src="${$(".logo").src}" alt="MYALM Education"></div><div class="pbody">${body}</div><div class="pf"><span class="n">MR. MOHAMMED YAHYA AL-MUDHAFAR</span> <span class="n">|</span> <span class="m">MYALM EDUCATION</span></div></section>`}
 function vReport(){const g=G();if(!g||!g.students.length){app.innerHTML=`<div class="card empty"><h3>No reports yet</h3><button class="btn teal" onclick="go('class')">Go to Class</button></div>`;return}
  if(!stu())curStu=(g.students.find(x=>calc(x,g).ov!=null)||g.students[0]).id;const s=stu(),r=calc(s,g);
  let bar=`<div class="rbar noprint"><div class="card" style="margin:0"><div class="row"><label class="f" style="min-width:180px;flex:1">Student<select id="rSel">${g.students.map(x=>`<option value="${x.id}" ${x.id===s.id?"selected":""}>${esc(x.name)}</option>`).join("")}</select></label>
@@ -662,20 +744,20 @@ function vReport(){const g=G();if(!g||!g.students.length){app.innerHTML=`<div cl
  <button class="btn violet" id="spk">Read aloud</button><select id="acc" class="chip" aria-label="Accent"><option value="en-US" ${S.accent==="en-US"?"selected":""}>US voice</option><option value="en-GB" ${S.accent==="en-GB"?"selected":""}>UK voice</option></select>
  <select id="pace" class="chip" aria-label="Pace"><option value=".8" ${S.pace==.8?"selected":""}>Slow</option><option value=".9" ${S.pace==.9?"selected":""}>Mid</option><option value="1" ${S.pace==1?"selected":""}>Normal</option></select></div></div></div>`;
  if(r.ov==null){app.innerHTML=bar+`<div class="card empty"><h3>${esc(s.name)} is not fully evaluated yet</h3><p>Rate at least one criterion in each of sections A, B and C.</p><button class="btn teal" id="toEv">Evaluate now</button></div>`;bindReport(s,g,r);$("#toEv").onclick=()=>go("eval");return}
- app.innerHTML=bar+`<div class="pages"><div class="rep">${reportPages(s,g,r)}</div></div>`;fitPages();bindReport(s,g,r)}
-function reportPages(s,g,r){const b=band(r.ov),st=strengths(s),pr=priorities(s),L=LEVELS[g.level];
+ app.innerHTML=bar+`<div class="pwrap"><div class="pages"><div class="rep">${reportPages(s,g,r)}</div></div></div>`;fitPages();bindReport(s,g,r)}
+function reportPages(s,g,r){curDraft=s.status!=="approved";const b=band(r.ov),st=strengths(s),pr=priorities(s),L=LEVELS[g.level];
  const ci=CEFR.indexOf(r.cefr),nxt=CEFR[Math.min(5,ci+1)];
  // page 1
  let p1=(s.status!=="approved"?`<div class="draft">DRAFT — awaiting instructor review and approval</div>`:"")+`<div class="hero"><div class="idbox"><div><span>Student</span><b>${esc(s.name)}</b></div><div><span>Programme</span><b>${esc(L.t)}</b></div><div><span>Assessment</span><b>${esc(L.sub)}</b></div><div><span>Class</span><b>${esc(g.name)}</b></div>${s.topic?`<div><span>Topic</span><b>${esc(s.topic)}</b></div>`:""}<div><span>Date</span><b>${esc(fmtDate(g.date))}</b></div>${s.time?`<div><span>Speaking time</span><b>${esc(s.time)} (target ${g.target} min)</b></div>`:""}</div>
- <div class="big" style="background:linear-gradient(135deg,var(--navy),${b.col})"><div style="font-size:12px;opacity:.85;text-transform:uppercase;letter-spacing:1px">Overall score</div><div class="sc">${f1(r.ov)}<small> / 9</small></div><div class="lb">${b.en} <span class="ar" style="opacity:.85">· ${b.ar}</span></div><div style="font-size:11.5px;opacity:.9">${b.d}</div>
+ <div class="big" style="border-left:10px solid ${b.col}"><div style="font-size:12px;opacity:.85;text-transform:uppercase;letter-spacing:1px">Overall score</div><div class="sc">${f1(r.ov)}<small> / 9</small></div><div class="lb">${b.en}</div><div class="ar" style="font-size:12px;opacity:.9">النتيجة العامة ${f1(r.ov)} من 9 — ${b.ar} · المستوى التقديري ${r.cefr}</div><div style="font-size:11.5px;opacity:.9">${b.d}</div>
  <div class="row2"><span class="pill">Total ${f1(r.t27)} / 27 ÷ 3</span><span class="pill">Estimated CEFR (speaking): ${r.cefr}</span>${r.fin!=null?`<span class="pill">Final ${Math.round(r.fin)}%${r.w&&r.rec!=null?` (incl. course record ${r.w*100}%)`:""}</span>`:""}</div></div></div>`;
  p1+=`<div class="twocol"><div><h3>Your skills profile <span class="ar">ملفّك المهاري</span></h3>${radar(s)}</div><div><h3>Section results <span class="ar">نتائج الأقسام</span></h3><div class="bars">${["A","B","C"].map(k=>`<div class="b"><span>${k} · ${SEC[k].en}</span><span class="tr"><i style="width:${(r[k]||0)/9*100}%;background:${SEC[k].col}"></i></span><span class="v">${f1(r[k])}</span></div>`).join("")}${r.rec!=null?`<div class="b"><span>D · Course record</span><span class="tr"><i style="width:${r.rec}%;background:${SEC.D.col}"></i></span><span class="v">${Math.round(r.rec)}%</span></div>`:""}</div>
- <p style="font-size:11.5px;color:var(--ink2);margin:6px 0 0">Section scores are averages of their criteria (A ÷ 5, B ÷ 7, C ÷ 3). The overall score is the average of the three sections. CEFR is estimated from Section A (language) using IELTS-aligned bands.</p>
+ <p style="font-size:11.5px;color:var(--ink2);margin:6px 0 0">Section scores are averages of their rated criteria (A ÷ ${r.nA}, B ÷ ${r.nB}, C ÷ ${r.nC}).${r.done?"":` ${15-r.n} unrated criteri${15-r.n>1?"a are":"on is"} left out.`} The overall score is the average of the three sections. CEFR is estimated from Section A (language) using IELTS-aligned bands.</p>
  ${r.rec!=null?`<div style="margin-top:6px;font-size:11.5px">${REC.map(q=>s.rec[q.id]!=null&&s.rec[q.id]!==""?`<span class="badge" style="margin:2px">${q.en}: ${s.rec[q.id]}${q.pct?"%":"/9"}</span>`:"").join("")}</div>`:""}</div></div>`;
- p1+=`<h3>Criterion by criterion <span class="ar">كل معيار على حدة</span></h3><table class="ptbl">${C.map((c,i)=>{const v=s.scores[c.id],bb=band(v);return `<tr><td style="width:18px;color:${SEC[c.sec].col};font-weight:800">${i+1}</td><td style="width:180px">${c.en}</td><td><span class="tr" style="display:block"><i style="width:${(v||0)/9*100}%;background:${SEC[c.sec].col}"></i></span></td><td style="width:30px;text-align:right;font-weight:800">${v||"–"}</td><td style="width:118px" class="bl"><span style="color:${bb?bb.col:"#999"}">${bb?bb.en:"Not rated"}</span></td></tr>`}).join("")}</table>`;
+ p1+=`<h3>Criterion by criterion <span class="ar">كل معيار على حدة</span></h3><table class="ptbl">${C.map((c,i)=>{const v=s.scores[c.id],bb=band(v);return `<tr><td style="width:18px;color:${SEC[c.sec].col};font-weight:800">${i+1}</td><td style="width:180px">${c.en}</td><td><span class="tr" style="display:block"><i style="width:${(v||0)/9*100}%;background:${SEC[c.sec].col}"></i></span></td><td style="width:30px;text-align:right;font-weight:800">${v||"–"}</td><td style="width:124px" class="bl">${bandTag(v,1)}</td></tr>`}).join("")}</table>`;
  // page 2
- let p2=`<h3>What you do well <span class="ar">نقاط قوتك</span></h3>${st.map(x=>`<div class="box str"><h4>${x.c.en}<span class="s" style="color:${band(x.s).col}">${x.s}/9 · ${band(x.s).en}</span></h4>${esc(s.name.split(" ")[0])} ${x.c.p}. Keep using this strength — it will carry you to the next level.${evid(s,x.c.id)}${s.notes[x.c.id]?`<div style="color:var(--ink2);margin-top:2px"><i>Teacher's note: ${esc(s.notes[x.c.id])}</i></div>`:""}</div>`).join("")}`;
- p2+=`<h3>Your top 3 priorities & action plan <span class="ar">أولوياتك الثلاث وخطة العمل</span></h3>${pr.map(x=>{const t=tier(x.s);return `<div class="box pri"><h4>${x.c.en}<span class="s" style="color:${band(x.s).col}">${x.s}/9 · ${band(x.s).en}</span></h4><div class="tier">${t.en} <span class="ar" style="display:inline">· ${t.ar}</span></div>Goal: ${x.c.n}.${evid(s,x.c.id)}${s.notes[x.c.id]?` <i style="color:var(--ink2)">Teacher's note: ${esc(s.notes[x.c.id])}</i>`:""}<ul>${x.c.d.map(d=>`<li>${d}</li>`).join("")}</ul><div class="ar"><b>نصيحة:</b> ${x.c.t}</div></div>`}).join("")}`;
+ let p2=`<h3>Your strongest areas <span class="ar">أقوى مهاراتك</span></h3>${st.map(x=>`<div class="box str"><h4>${x.c.en}<span class="s">${bandTag(x.s)}</span></h4>${strengthText(s,x)}${evid(s,x.c.id)}${s.notes[x.c.id]?`<div style="color:var(--ink2);margin-top:2px"><i>Teacher's note: ${esc(s.notes[x.c.id])}</i></div>`:""}</div>`).join("")}`;
+ p2+=`<h3>Your top 3 priorities & action plan <span class="ar">أولوياتك الثلاث وخطة العمل</span></h3>${pr.map(x=>{const t=tier(x.s);return `<div class="box pri"><h4>${x.c.en}<span class="s">${bandTag(x.s)}</span></h4><div class="tier">${t.en} <span class="ar" style="display:inline">· ${t.ar}</span></div><b>${x.s>=9?"":"To reach "}${nextT(x.c,x.s).b}:</b> ${nextT(x.c,x.s).t}${evid(s,x.c.id)}${s.notes[x.c.id]?` <i style="color:var(--ink2)">Teacher's note: ${esc(s.notes[x.c.id])}</i>`:""}<ul>${x.c.d.map(d=>`<li>${d}</li>`).join("")}</ul><div class="ar"><b>نصيحة:</b> ${x.c.t}</div></div>`}).join("")}`;
  const P=pr.map(x=>x.c);
  const wk=`<h3>Your 4-week plan <span class="ar">خطتك لأربعة أسابيع</span></h3><div class="weeks">
  <div class="wk"><b>Week 1</b>${P[0]?P[0].d[0]:""}</div><div class="wk"><b>Week 2</b>${P[1]?P[1].d[0]:""} ${P[0]?"Keep: "+P[0].s.toLowerCase()+" practice 3×.":""}</div>
@@ -690,41 +772,47 @@ function reportPages(s,g,r){const b=band(r.ov),st=strengths(s),pr=priorities(s),
  p3+=`<div class="cred">${CRED}${s.ai||s.audio?`<br><b>Method:</b> AI-assisted analysis of the recorded presentation (transcript, speech measures and language errors)${s.status==="approved"?`, with every score reviewed and approved by the instructor on ${esc(fmtDate(s.approvedAt))}`:" — pending instructor review"}.`:""}<br><b>Assessed by:</b> ${esc(g.assessor)} — ${CREDBY}</div><div class="sig"><span>Instructor signature: ______________________</span><span>Date: ${esc(fmtDate(g.date))}</span></div>`;
  return pageWrap(1,g,p1)+pageWrap(2,g,p2)+pageWrap(3,g,p3)+labPages(s,g,4)}
 function evid(s,cid){const a=s.ai&&s.ai.scores&&s.ai.scores[cid];if(!a||!(a.evidence||a.quote))return"";return `<div style="color:var(--ink2);margin-top:2px">From your recording: ${esc(a.evidence)}${a.quote?` <i>“${esc(a.quote)}”</i>`:""}</div>`}
-function labPages(s,g,start){const L=s.lab,blocks=[],CAP=252;const hasM=(s.ai&&s.ai.metrics)||s.audio;
- if(!hasM&&!labCount(s))return"";
- const len=x=>String(x||"").length;
- blocks.push({h:12,html:`<p style="margin:0 0 6px;color:var(--ink2)">This section is built from your recorded presentation. Each item shows exactly what to change and how. Practise the corrected sentences aloud until they feel natural.</p>`});
- if(hasM)blocks.push({h:34,html:`<h3>Your speech in numbers <span class="ar">كلامك بالأرقام</span></h3>${metricTiles(s)}`});
- const HEAD={errors:`<tr><th style="width:15%">Type</th><th>You said</th><th>Better English</th><th style="width:30%">Why</th></tr>`,vocab:`<tr><th style="width:24%">You used</th><th style="width:30%">Stronger choices</th><th>Example</th></tr>`,pron:`<tr><th style="width:30%">Word</th><th>How to say it</th></tr>`,recs:`<tr><th style="width:18%">Area</th><th>What to do</th><th style="width:34%">Model / example</th></tr>`};
- const sec=(k,title,ar,rows)=>{if(!rows.length)return;blocks.push({h:11,head:true,html:`<h3>${title} <span class="ar">${ar}</span></h3>`});rows.forEach(r=>blocks.push(Object.assign({tbl:k},r)))};
- sec("errors","Error corrections","تصحيح الأخطاء",L.errors.map(e=>({h:7+Math.ceil(Math.max(len(e.said),len(e.better),len(e.why)*0.8)/46)*3.6+(e.ar?4.5:0),html:`<tr><td class="ty">${esc(e.type)}</td><td class="bad">${esc(e.said)}</td><td class="good">${esc(e.better)}</td><td>${esc(e.why)}${e.ar?`<div class="ar" style="color:var(--mute)">${esc(e.ar)}</div>`:""}</td></tr>`})));
- sec("vocab","Vocabulary upgrades","ترقية المفردات",L.vocab.map(e=>({h:7+Math.ceil(len(e.example)/64)*3.6,html:`<tr><td class="bad">${esc(e.used)}</td><td class="good">${esc(e.better)}</td><td>${esc(e.example)}</td></tr>`})));
- sec("pron","Pronunciation focus","تركيز النطق",L.pron.map(e=>({h:6.5+Math.ceil(len(e.tip)/85)*3.6,html:`<tr><td><b>${esc(e.word)}</b></td><td>${esc(e.tip)}</td></tr>`})));
- sec("recs","Precise recommendations","توصيات دقيقة",L.recs.map(e=>({h:7+Math.ceil(Math.max(len(e.action),len(e.example))/54)*3.6,html:`<tr><td><b>${esc(e.area)}</b></td><td>${esc(e.action)}</td><td><i>${esc(e.example)}</i></td></tr>`})));
- const pages=[[]];let cur=0;
- blocks.forEach((b,i)=>{const need=b.head&&blocks[i+1]?b.h+blocks[i+1].h:b.h;if(cur+need>CAP&&pages[pages.length-1].length){pages.push([]);cur=0}pages[pages.length-1].push(b);cur+=b.h});
- return pages.map((pg,pi)=>{let html=pi===0?"":`<p style="margin:0 0 6px;color:var(--mute);font-size:11px">Language Lab — continued</p>`,tb=null,rows="";
-  const flush=()=>{if(tb){html+=`<table class="lab"><thead>${HEAD[tb]}</thead><tbody>${rows}</tbody></table>`;tb=null;rows=""}};
-  pg.forEach(b=>{if(b.tbl){if(tb!==b.tbl){flush();tb=b.tbl}rows+=b.html}else{flush();html+=b.html}});flush();
-  return pageWrap(start+pi,g,(pi===0?`<h3 style="font-size:17px;margin-top:0">Language Lab — your precise improvement plan <span class="ar">مختبر اللغة</span></h3>`:"")+html)}).join("")}
-function fitPages(){const P=app.querySelector(".pages");if(!P)return;P.style.zoom="";
+function strengthText(s,x){const f=esc(s.name.split(" ")[0]),n=nextT(x.c,x.s);return x.s>=7?`${f} ${x.c.p}. Keep using this strength — it will carry you to the next level.`:x.s>=5?`One of ${f}'s stronger areas: it meets the basic standard. To reach ${n.b}: ${n.t}`:`${f}'s strongest area so far, and still developing. To reach ${n.b}: ${n.t}`}
+function labPages(s,g,start){const L=s.lab,hasM=(s.ai&&s.ai.metrics)||s.audio;if(!hasM&&!labCount(s))return"";
+ let h=`<h3 style="font-size:17px;margin-top:0">Language Lab — your precise improvement plan <span class="ar">مختبر اللغة</span></h3><p style="margin:0 0 6px;color:var(--ink2)">This section is built from your recorded presentation. Each item shows exactly what to change and how. Practise the corrected sentences aloud until they feel natural.</p>`;
+ if(hasM)h+=`<h3>Your speech in numbers <span class="ar">كلامك بالأرقام</span></h3>${metricTiles(s)}`;
+ const tb=(title,ar,head,rows)=>rows.length?`<h3>${title} <span class="ar">${ar}</span></h3><table class="lab"><thead><tr>${head}</tr></thead><tbody>${rows.join("")}</tbody></table>`:"";
+ h+=tb("Error corrections","تصحيح الأخطاء",`<th style="width:13%">Type</th><th>You said</th><th>Better English</th><th style="width:30%">Why</th>`,L.errors.map(e=>`<tr><td class="ty">${esc(e.type)}</td><td class="bad">${esc(e.said)}</td><td class="good">${esc(e.better)}</td><td>${esc(e.why)}${e.ar?`<div class="ar" style="color:var(--mute)">${esc(e.ar)}</div>`:""}</td></tr>`));
+ h+=tb("Vocabulary upgrades","ترقية المفردات",`<th style="width:24%">You used</th><th style="width:30%">Stronger choices</th><th>Example</th>`,L.vocab.map(e=>`<tr><td class="bad">${esc(e.used)}</td><td class="good">${esc(e.better)}</td><td>${esc(e.example)}</td></tr>`));
+ h+=tb("Pronunciation focus","تركيز النطق",`<th style="width:30%">Word</th><th>How to say it</th>`,L.pron.map(e=>`<tr><td><b>${esc(e.word)}</b></td><td>${esc(e.tip)}</td></tr>`));
+ h+=tb("Precise recommendations","توصيات دقيقة",`<th style="width:18%">Area</th><th>What to do</th><th style="width:34%">Model / example</th>`,L.recs.map(e=>`<tr><td><b>${esc(e.area)}</b></td><td>${esc(e.action)}</td><td><i>${esc(e.example)}</i></td></tr>`));
+ return pageWrap(start,g,h)}
+function fitZoom(){const P=app.querySelector(".pages");if(!P)return;const W=P.parentElement;P.style.transform="";P.style.width="";W.style.height="";
+ const av=W.clientWidth;if(av<794){const z=av/794;P.style.width="794px";P.style.transformOrigin="0 0";P.style.transform=`scale(${z.toFixed(4)})`;W.style.height=Math.ceil(P.offsetHeight*z)+"px"}}
+/* Measures every page and moves overflow (row by row for tables) to a new page, so nothing is ever cut off */
+function fitPages(){const P=app.querySelector(".pages");if(!P)return;P.style.transform="";const over=b=>b.scrollHeight>b.clientHeight+2;
  P.querySelectorAll(".rep").forEach(rep=>{const pages=[...rep.querySelectorAll(".page")];
-  for(let k=0;k<pages.length&&k<40;k++){const pg=pages[k],body=pg.querySelector(".pbody"),moved=[];if(body.scrollHeight>body.clientHeight+2&&body.scrollHeight<body.clientHeight*1.12)body.classList.add("tight");
-   while(body.scrollHeight>body.clientHeight+2&&body.children.length>1){moved.unshift(body.lastElementChild);body.lastElementChild.remove()}
-   if(moved.length){const np=pg.cloneNode(true),nb=np.querySelector(".pbody");nb.innerHTML=`<p style="margin:0 0 6px;color:var(--mute);font-size:11px">— continued —</p>`;moved.forEach(m=>nb.appendChild(m));pg.after(np);pages.splice(k+1,0,np)}}
+  for(let k=0;k<pages.length&&k<80;k++){const pg=pages[k],body=pg.querySelector(".pbody");if(!over(body))continue;
+   if(body.scrollHeight<body.clientHeight*1.12){body.classList.add("tight");if(!over(body))continue}
+   const moved=[];let part=null,src=null;
+   while(over(body)){const last=body.lastElementChild;if(!last)break;const tb=last.tagName==="TABLE"?last.tBodies[0]:null;
+    if(tb&&tb.rows.length>1){if(src!==last){part=last.cloneNode(false);if(last.tHead)part.appendChild(last.tHead.cloneNode(true));part.appendChild(document.createElement("tbody"));moved.unshift(part);src=last}
+     part.tBodies[0].insertBefore(tb.rows[tb.rows.length-1],part.tBodies[0].firstChild)}
+    else{if(body.children.length<=1)break;
+     if(src===last){while(tb.rows.length)part.tBodies[0].insertBefore(tb.rows[tb.rows.length-1],part.tBodies[0].firstChild);last.remove()}else{last.remove();moved.unshift(last)}
+     src=null}}
+   while(body.children.length>1&&body.lastElementChild.tagName==="H3"){const hh=body.lastElementChild;hh.remove();moved.unshift(hh)}
+   if(moved.length){const np=pg.cloneNode(true),nb=np.querySelector(".pbody");nb.classList.remove("tight");nb.innerHTML=`<p style="margin:0 0 6px;color:var(--mute);font-size:11px">— continued —</p>`;moved.forEach(m=>nb.appendChild(m));pg.after(np);pages.splice(k+1,0,np)}}
   rep.querySelectorAll(".page .pn").forEach((n,i)=>n.textContent=i+1)});
- if(innerWidth<840){const w=P.clientWidth||innerWidth-28;P.style.zoom=Math.min(1,w/794).toFixed(3)}}
+ fitZoom()}
+addEventListener("resize",()=>{if(document.body.dataset.view==="report")fitZoom()});
 function fmtDate(d){if(!d)return"";const x=new Date(d+"T00:00:00");return isNaN(x)?d:x.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}
 function summary(s,g,r){const b=band(r.ov),st=strengths(s),pr=priorities(s);
- return `MYALM EDUCATION — Final Evaluation\n${LEVELS[g.level].t}\nStudent: ${s.name}\nOverall: ${f1(r.ov)}/9 (${b.en}) · Estimated CEFR: ${r.cefr}${r.fin!=null?` · Final: ${Math.round(r.fin)}%`:""}\nA Language ${f1(r.A)} | B Presentation ${f1(r.B)} | C Overall ${f1(r.C)}\n\nStrengths: ${st.map(x=>x.c.s).join(", ")}\nFocus next: ${pr.map(x=>x.c.s).join(", ")}\nFirst step: ${pr[0]?pr[0].c.d[0]:""}\n\n— ${g.assessor}`}
+ return `MYALM EDUCATION — Final Evaluation\n${LEVELS[g.level].t}\nStudent: ${s.name}\nOverall: ${f1(r.ov)}/9 (${b.en}) · Estimated CEFR: ${r.cefr}${r.fin!=null?` · Final: ${Math.round(r.fin)}%`:""}\nA Language ${f1(r.A)} | B Presentation ${f1(r.B)} | C Overall ${f1(r.C)}\n\nStrengths: ${st.map(x=>x.c.s).join(", ")}\nFocus next: ${pr.map(x=>x.c.s).join(", ")}\nFirst step: ${pr[0]?pr[0].c.d[0]:""}${s.lab.errors.length?"\n\nTop corrections:\n"+s.lab.errors.slice(0,3).map(e=>`✗ ${e.said}\n✓ ${e.better}`).join("\n"):""}\n\n— ${g.assessor}`}
+function okShare(s){return s.status==="approved"||confirm("This evaluation is still a DRAFT (not approved yet). Share it anyway?")}
 function bindReport(s,g,r){$("#rSel").onchange=e=>{stopSpeak();curStu=e.target.value;render()};
  $("#pr").onclick=()=>{stopSpeak();window.print()};
- $("#cp").onclick=()=>{if(r.ov==null)return toast("Evaluate first");copyText(summary(s,g,r))};
- $("#wa").onclick=()=>{if(r.ov==null)return toast("Evaluate first");window.open("https://wa.me/?text="+encodeURIComponent(summary(s,g,r)),"_blank")};
- $("#acc").onchange=e=>{S.accent=e.target.value;save()};$("#pace").onchange=e=>{S.pace=+e.target.value;save()};
+ $("#cp").onclick=()=>{if(r.ov==null)return toast("Evaluate first");if(!okShare(s))return;copyText(summary(s,g,r))};
+ $("#wa").onclick=()=>{if(r.ov==null)return toast("Evaluate first");if(!okShare(s))return;window.open("https://wa.me/?text="+encodeURIComponent(summary(s,g,r)),"_blank")};
+ $("#acc").onchange=e=>{S.accent=e.target.value;save(true)};$("#pace").onchange=e=>{S.pace=+e.target.value;save(true)};
  $("#spk").onclick=()=>{if(speaking){stopSpeak();return}if(r.ov==null)return;speak(spoken(s,g,r))}}
 function spoken(s,g,r){const b=band(r.ov),st=strengths(s),pr=priorities(s);const first=s.name.split(" ")[0];
- return `Hello ${first}. This is your final evaluation for the ${LEVELS[g.level].t}. Your overall score is ${f1(r.ov)} out of 9, which is ${b.en}. Your estimated speaking level is ${r.cefr.split("").join(" ")}. Your biggest strengths are ${st.map(x=>x.c.s).join(", ")}. Well done. To grow even more, focus on ${pr.map(x=>x.c.s).join(", ")}. Your first step: ${pr[0]?pr[0].c.d[0]:""} Keep going. Your English is getting stronger every week.`}
+ return `Hello ${first}. This is your final evaluation for the ${LEVELS[g.level].t}. Your overall score is ${f1(r.ov)} out of 9, which is ${b.en}. Your estimated speaking level is ${r.cefr.split("").join(" ")}. ${st.length?"Your strongest areas are "+st.map(x=>x.c.s).join(", ")+". Well done.":""} To grow even more, focus on ${pr.map(x=>x.c.s).join(", ")}. Your first step: ${pr[0]?pr[0].c.d[0]:""} Keep going. Your English is getting stronger every week.`}
 let speaking=false;
 function speak(t){if(!("speechSynthesis" in window))return toast("Read-aloud is not supported in this browser");stopSpeak();const u=new SpeechSynthesisUtterance(t);u.lang=S.accent;u.rate=S.pace;
  const vs=speechSynthesis.getVoices().filter(v=>v.lang.replace("_","-").startsWith(S.accent));const pref=vs.find(v=>/natural|neural|online/i.test(v.name))||vs.find(v=>/google|samantha|daniel|aria|jenny|guy|libby|sonia|ryan/i.test(v.name))||vs[0];if(pref)u.voice=pref;
@@ -740,7 +828,7 @@ function vDash(){const g=G();if(!g||!g.students.length){app.innerHTML=`<div clas
  const rated=cav.filter(x=>x.v!=null),top=[...rated].sort((a,b)=>b.v-a.v).slice(0,3),low=[...rated].sort((a,b)=>a.v-b.v).slice(0,3);
  const clsAvg=avg(done.map(x=>x.r.ov)),cnt={};done.forEach(x=>cnt[x.r.cefr]=(cnt[x.r.cefr]||0)+1);
  const bc=BANDS.map(b=>({b,n:done.filter(x=>band(x.r.ov)===b).length}));
- let h=`<div class="row"><h2 style="margin:0">Class Dashboard — ${esc(g.name)}</h2><span class="sp"></span><button class="btn violet sm" id="aiD">Import AI evaluation</button><button class="btn sm" id="pa">Print all reports</button><button class="btn ghost sm" id="csv">Export CSV (Excel)</button><button class="btn ghost sm" id="pd">Print dashboard</button></div>`+hint("See the whole group at a glance: who needs what, and what to teach next.","نظرة شاملة على الصف: من يحتاج ماذا، وماذا ندرّس بعد ذلك.");
+ let h=`<div class="ph ponly"><div class="tt"><span>${esc(g.name)} · ${esc(LEVELS[g.level].t)} · Class Results</span></div><img src="${$(".logo").src}" alt="MYALM Education"></div><div class="row"><h2 style="margin:0">Class Dashboard — ${esc(g.name)}</h2><span class="sp"></span><button class="btn violet sm" id="aiD">Import AI evaluation</button><button class="btn sm" id="pa">Print all reports</button><button class="btn ghost sm" id="csv">Export CSV (Excel)</button><button class="btn ghost sm" id="pd">Print dashboard</button></div>`+hint("See the whole group at a glance: who needs what, and what to teach next.","نظرة شاملة على الصف: من يحتاج ماذا، وماذا ندرّس بعد ذلك.");
  h+=`<div class="tiles"><div class="tile"><small>Evaluated</small><div class="v">${done.length}/${g.students.length}</div><div class="s">students with A, B & C rated</div></div>
  <div class="tile"><small>Class average</small><div class="v">${f1(clsAvg)}<span style="font-size:15px;color:var(--mute)"> /9</span></div><div class="s">${clsAvg!=null?band(clsAvg).en:"–"}</div></div>
  <div class="tile"><small>CEFR spread</small><div class="v" style="font-size:20px">${CEFR.filter(c=>cnt[c]).map(c=>`${c}×${cnt[c]}`).join(" ")||"–"}</div><div class="s">estimated from Section A</div></div>
@@ -758,7 +846,7 @@ function vDash(){const g=G();if(!g||!g.students.length){app.innerHTML=`<div clas
  <div class="card"><h3>Band distribution</h3><div class="bars">${bc.map(x=>`<div class="b" data-tip="${x.b.en}: ${x.n} student(s)"><span style="font-size:13px">${x.b.en}</span><span class="tr"><i style="width:${done.length?x.n/done.length*100:0}%;background:${x.b.col}"></i></span><span class="v">${x.n}</span></div>`).join("")}</div>
  <h3 style="margin-top:18px">Focus for the next course</h3>${low.map(x=>`<div class="box pri"><h4>${x.c.en}<span class="s">${f1(x.v)} avg</span></h4>Class activity: ${x.c.d[1]}</div>`).join("")}
  <h3 style="margin-top:14px">Class strengths to build on</h3>${top.map(x=>`<div class="box str"><h4>${x.c.en}<span class="s">${f1(x.v)} avg</span></h4></div>`).join("")}</div></div>`;
- app.innerHTML=h;
+ h+=classErrors(g);app.innerHTML=h;
  app.querySelectorAll("th[data-k]").forEach(t=>t.onclick=()=>{const k=t.dataset.k;sortD=sortK===k?-sortD:(k==="name"?1:-1);sortK=k;render()});
  app.querySelectorAll("[data-rp]").forEach(b=>b.onclick=()=>{curStu=b.dataset.rp;go("report")});
  $("#aiD").onclick=()=>$("#aiIn").click();
@@ -769,9 +857,13 @@ function vDash(){const g=G();if(!g||!g.students.length){app.innerHTML=`<div clas
   const lines=[head.map(q).join(",")].concat(g.students.map(s=>{const r=calc(s,g),b=band(r.ov);return[s.name,s.topic,s.time,...C.map(c=>s.scores[c.id]),f1(r.A),f1(r.B),f1(r.C),f1(r.t27),f1(r.ov),b?b.en:"",r.cefr,...REC.map(x=>s.rec[x.id]),r.rec!=null?Math.round(r.rec):"",r.fin!=null?Math.round(r.fin):"",s.status==="approved"?"Approved":"Draft",s.approvedAt||"",pendingCount(s),s.lab.errors.length,s.rem.str,s.rem.dev,s.rem.next,...C.map(c=>s.notes[c.id]||"")].map(q).join(",")}));
   download(`${g.name.replace(/[^\w\- ]+/g,"")}_final_evaluation.csv`,"﻿"+lines.join("\r\n"),"text/csv;charset=utf-8");toast("CSV downloaded")}}
 
+function classErrors(g){const m={};let tot=0;g.students.forEach(s=>{const seen=new Set();s.lab.errors.forEach(e=>{let k=String(e.type||"Other").trim().toLowerCase();k=k?k[0].toUpperCase()+k.slice(1):"Other";m[k]=m[k]||{n:0,st:0,ex:e};m[k].n++;tot++;if(!seen.has(k)){seen.add(k);m[k].st++}})});
+ const L=Object.entries(m).sort((a,b)=>b[1].n-a[1].n).slice(0,8);if(!L.length)return"";const mx=L[0][1].n;
+ return `<div class="card"><h3>Most common language errors in this class</h3><p class="hint" style="margin:0 0 8px">${tot} correction(s) recorded in the Language Lab. Teach the top types first.</p><div class="bars">${L.map(([k,v])=>`<div class="b" data-tip="${esc(k)}: ${v.n} error(s) from ${v.st} student(s)"><span style="font-size:13px">${esc(k)}</span><span class="tr"><i style="width:${v.n/mx*100}%;background:#C77700"></i></span><span class="v">${v.n}</span></div>`).join("")}</div>
+ <div style="font-size:13.5px;color:var(--ink2);margin-top:8px">${L.slice(0,3).map(([k,v])=>`<div style="margin:2px 0"><b>${esc(k)}</b> (${v.st} student${v.st>1?"s":""}), for example: <span style="color:#B42318">${esc(v.ex.said)}</span> → <span style="color:#0B7F75;font-weight:700">${esc(v.ex.better)}</span></div>`).join("")}</div></div>`}
 function printAll(g){const list=g.students.filter(s=>calc(s,g).ov!=null);if(!list.length)return toast("No evaluated students yet");
  const dr=list.filter(s=>s.status!=="approved").length;if(dr&&!confirm(`${dr} report(s) are still drafts and will print with a DRAFT banner. Continue?`))return;
- stopSpeak();app.innerHTML=`<div class="pages">${list.map(s=>`<div class="rep">${reportPages(s,g,calc(s,g))}</div>`).join("")}</div>`;fitPages();$(".scorebar")&&$(".scorebar").remove();
+ stopSpeak();document.body.dataset.view="report";document.title=`${g.name} – Final Evaluation Reports`;app.innerHTML=`<div class="pwrap"><div class="pages">${list.map(s=>`<div class="rep">${reportPages(s,g,calc(s,g))}</div>`).join("")}</div></div>`;fitPages();$(".scorebar")&&$(".scorebar").remove();
  const back=()=>{window.removeEventListener("afterprint",back);render()};window.addEventListener("afterprint",back);setTimeout(()=>window.print(),150)}
 /* ============ START ============ */
 if(!G()&&S.groups[0])S.cur=S.groups[0].id;
