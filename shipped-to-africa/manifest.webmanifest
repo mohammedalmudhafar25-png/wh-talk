@@ -1,0 +1,32 @@
+{
+ "name": "Shipped to Africa · Madagascar · Listening & Speaking",
+ "short_name": "Shipped to Africa",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#FFFFFF",
+ "theme_color": "#1E2A5A",
+ "description": "Interactive listening and speaking lesson on the Madagascar (2005) scene 'Shipped to Africa': gap-fill crates, penguin radar, zoo court, quiz show, who said it, word safari, rescue bingo and talk time.",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

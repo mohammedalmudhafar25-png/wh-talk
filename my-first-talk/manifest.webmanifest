@@ -1,0 +1,32 @@
+{
+ "name": "My First Talk — Presentation Skills (A2–B1) · MYALM Education",
+ "short_name": "My First Talk",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#FFFFFF",
+ "theme_color": "#1E2A5A",
+ "description": "A conversation game for A2–B1 learners: learners help Ali by ear and by voice, then build and give their own 10-minute talk. UK/US voices, speaking checks, saved progress and recordings.",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

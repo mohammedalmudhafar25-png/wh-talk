@@ -1,0 +1,32 @@
+{
+ "name": "The Green Field · 2036 · MYALM Education",
+ "short_name": "The Green Field",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#FFFFFF",
+ "theme_color": "#1E2A5A",
+ "description": "Basra 2036: the fields run on green energy, and three engineers meet again as strangers. A B2–C1 listening and speaking lesson with Genuine or Fake, C1 phrases, shadowing, role-play and free conversation.",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

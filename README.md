@@ -19,3 +19,17 @@ Interactive speaking games for English learners:
 - 🎙️ **The Cool Talk (Episode 10 · B2–C1 · podcast studio)** — "Cool People Have Six Traits in Common" + Jefferson Fisher: flip-card vocabulary with pictures and real voices, Study Desk read-along with word taps, Arabic and open speaking questions, Fact-Check Buzzer, Cool or Good booths, Jefferson Breakdown (full video controls + on-screen pop quizzes), Shadow Jefferson (karaoke, echo/duet, waveform compare), Reframe It, Hot Seat debates, Call-in Show and My Podcast Intro, with timers, free back/next navigation and recording in every segment, a teacher projector mode and a class team scoreboard (auto points, rotating turns, random team picker, winner podium); installable on iPhone & Android (Add to Home Screen, works offline): https://mohammedalmudhafar25-png.github.io/wh-talk/cool-talk/ Studio sounds: Virtuosity Drums and Meta Piano (CC0), laughs and stingers from the Oculus Audio Pack by Meta (CC BY 4.0).
 
 Open the live page: https://mohammedalmudhafar25-png.github.io/wh-talk/
+
+## 📲 Every lesson is an installable offline app
+
+Each lesson folder now has `manifest.webmanifest`, `sw.js` and app icons. Open a lesson link once and tap **Install** (Android Chrome: ⋮ → Install app / Add to Home screen · iPhone Safari: Share → Add to Home Screen). The lesson then opens from its icon, works **without internet**, records voices, checks speaking and keeps progress.
+
+The single-file copies sent on WhatsApp/USB also carry the app layer: recording falls back to the phone's own recorder, and a **Get the app** button opens the lesson link.
+
+Build tool (run after adding or changing a lesson):
+
+```
+python3 tools/myalm_pwa.py web <lesson-folder>      # make one lesson an offline app
+python3 tools/myalm_pwa.py all                      # every lesson folder
+python3 tools/myalm_pwa.py offline in.html out.html --web <lesson-link>   # harden the WhatsApp/USB file
+```

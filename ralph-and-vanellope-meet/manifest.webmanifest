@@ -1,0 +1,32 @@
+{
+ "name": "Ralph & Vanellope Meet",
+ "short_name": "Ralph Lesson",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#FFFFFF",
+ "theme_color": "#2b1630",
+ "description": "A2 video-based listening and speaking lesson built on the Wreck-It Ralph scene: words, listening, team race quiz, discussion and dubbing.",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

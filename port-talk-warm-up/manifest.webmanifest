@@ -1,0 +1,32 @@
+{
+ "name": "Port Talk Warm-up",
+ "short_name": "Port Talk",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#FFFFFF",
+ "theme_color": "#0a5d8c",
+ "description": "Warm-up before the Wreck-It Ralph lesson: four AGP colleagues talk at the port; students judge True or False, explain why, and talk about their own work.",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
