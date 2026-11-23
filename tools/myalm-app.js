@@ -29,99 +29,105 @@
     });
   }
 
+  /* Lessons that record inside the page themselves opt out of the phone-recorder fallback with
+     <meta name="myalm-recorder" content="inapp"> (placed before <meta charset>). */
+  var INAPP_REC = meta('myalm-recorder') === 'inapp';
+  APP.inappRecorder = INAPP_REC;
+  if (!INAPP_REC) (function () {
   /* ---------- 2. Recording that never fails: phone-recorder fallback ---------- */
-  var actx = null;
-  function silentStream() {
-    try {
-      var AC = W.AudioContext || W.webkitAudioContext;
-      actx = actx || new AC();
-      var dst = actx.createMediaStreamDestination();
-      var s = dst.stream; s.__myalmFake = true; return s;
-    } catch (e) {
-      var t = { kind: 'audio', enabled: true, stop: function () {} };
-      return { __myalmFake: true, active: true, getTracks: function () { return [t]; }, getAudioTracks: function () { return [t]; } };
+    var actx = null;
+    function silentStream() {
+      try {
+        var AC = W.AudioContext || W.webkitAudioContext;
+        actx = actx || new AC();
+        var dst = actx.createMediaStreamDestination();
+        var s = dst.stream; s.__myalmFake = true; return s;
+      } catch (e) {
+        var t = { kind: 'audio', enabled: true, stop: function () {} };
+        return { __myalmFake: true, active: true, getTracks: function () { return [t]; }, getAudioTracks: function () { return [t]; } };
+      }
     }
-  }
-  var picker = null;
-  /* Opens the phone's recorder (or file picker). Resolves only when a recording comes back;
-     if the student backs out, onCancel runs and the same picker can be reopened by the next tap. */
-  function pickAudio(onCancel) {
-    return new Promise(function (resolve) {
-      if (picker && picker.parentNode) picker.parentNode.removeChild(picker);
-      var inp = picker = D.createElement('input');
-      inp.type = 'file'; inp.accept = 'audio/*'; inp.setAttribute('capture', 'user');
-      inp.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;width:1px;height:1px';
-      var left = false, t = 0;
-      function cancelled() { if (!inp.files || !inp.files.length) onCancel && onCancel(); }
-      inp.addEventListener('change', function () { clearTimeout(t); if (inp.files && inp.files[0]) { cleanup(); resolve(inp.files[0]); } });
-      inp.addEventListener('cancel', function () { clearTimeout(t); cancelled(); });
-      function onBlur() { left = true; }
-      function onBack() { if (D.hidden) { left = true; return; } if (left) { left = false; clearTimeout(t); t = setTimeout(cancelled, 4000); } }
-      function cleanup() { W.removeEventListener('blur', onBlur); W.removeEventListener('focus', onBack); D.removeEventListener('visibilitychange', onBack); }
-      W.addEventListener('blur', onBlur); W.addEventListener('focus', onBack); D.addEventListener('visibilitychange', onBack);
-      (D.body || D.documentElement).appendChild(inp);
-      inp.__open = function () { try { inp.click(); } catch (e) {} };
-      inp.__open();
-    });
-  }
-  function PhoneRecorder(stream) {
-    this.stream = stream; this.state = 'inactive'; this.mimeType = ''; this._l = {};
-    this.ondataavailable = this.onstop = this.onstart = this.onerror = this.onpause = this.onresume = null;
-    this.audioBitsPerSecond = 0;
-  }
-  PhoneRecorder.prototype = {
-    addEventListener: function (t, f) { (this._l[t] = this._l[t] || []).push(f); },
-    removeEventListener: function (t, f) { var a = this._l[t] || []; var i = a.indexOf(f); if (i > -1) a.splice(i, 1); },
-    dispatchEvent: function () { return true; },
-    _emit: function (t, ev) { ev = ev || {}; ev.type = t; ev.target = this; if (typeof this['on' + t] === 'function') try { this['on' + t](ev); } catch (e) { console.error(e); }
-      (this._l[t] || []).slice().forEach(function (f) { try { f(ev); } catch (e) { console.error(e); } }); },
-    start: function () {
-      var me = this; if (me.state === 'recording') return;
-      me.state = 'recording'; me._emit('start');
-      tip('🎙 Your phone recorder opens now — record, then tap ✓ / Done.', 'سيفتح مسجّل الهاتف: سجّل صوتك ثم اضغط ✓ أو تم');
-      me._p = pickAudio(function () {
-        tip('No recording yet — tap the record / mic button again to open the recorder.', 'ما تم التسجيل بعد — اضغط زر التسجيل مرة ثانية');
-      }).then(function (f) {
-        me.mimeType = f.type || 'audio/mp4'; me._emit('dataavailable', { data: f });
-        me.state = 'inactive'; me._emit('stop');
+    var picker = null;
+    /* Opens the phone's recorder (or file picker). Resolves only when a recording comes back;
+       if the student backs out, onCancel runs and the same picker can be reopened by the next tap. */
+    function pickAudio(onCancel) {
+      return new Promise(function (resolve) {
+        if (picker && picker.parentNode) picker.parentNode.removeChild(picker);
+        var inp = picker = D.createElement('input');
+        inp.type = 'file'; inp.accept = 'audio/*'; inp.setAttribute('capture', 'user');
+        inp.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;width:1px;height:1px';
+        var left = false, t = 0;
+        function cancelled() { if (!inp.files || !inp.files.length) onCancel && onCancel(); }
+        inp.addEventListener('change', function () { clearTimeout(t); if (inp.files && inp.files[0]) { cleanup(); resolve(inp.files[0]); } });
+        inp.addEventListener('cancel', function () { clearTimeout(t); cancelled(); });
+        function onBlur() { left = true; }
+        function onBack() { if (D.hidden) { left = true; return; } if (left) { left = false; clearTimeout(t); t = setTimeout(cancelled, 4000); } }
+        function cleanup() { W.removeEventListener('blur', onBlur); W.removeEventListener('focus', onBack); D.removeEventListener('visibilitychange', onBack); }
+        W.addEventListener('blur', onBlur); W.addEventListener('focus', onBack); D.addEventListener('visibilitychange', onBack);
+        (D.body || D.documentElement).appendChild(inp);
+        inp.__open = function () { try { inp.click(); } catch (e) {} };
+        inp.__open();
       });
-    },
-    stop: function () {
-      /* a tap on "Stop" gives a fresh user gesture: reopen the recorder if the phone blocked it */
-      if (this.state === 'recording' && picker && !picker.files.length && picker.__open) picker.__open();
-    },
-    pause: function () {}, resume: function () {}, requestData: function () {}
-  };
-  var RealMR = W.MediaRecorder;
-  function MR(stream, opts) {
-    if (!RealMR || (stream && stream.__myalmFake)) return new PhoneRecorder(stream);
-    return opts ? new RealMR(stream, opts) : new RealMR(stream);
-  }
-  MR.isTypeSupported = function (t) { return RealMR && RealMR.isTypeSupported ? RealMR.isTypeSupported(t) : /^audio\//.test(t || ''); };
-  if (RealMR) MR.prototype = RealMR.prototype;
-  try { W.MediaRecorder = MR; } catch (e) {}
-
-  var md = N.mediaDevices;
-  var realGUM = md && md.getUserMedia ? md.getUserMedia.bind(md) : null;
-  function fallbackGUM(c) {
-    if (c && c.video) return Promise.reject(new Error('NotSupported'));
-    APP.phoneRecorder = true; return Promise.resolve(silentStream());
-  }
-  function gum(c) {
-    if (!realGUM || !secure) return fallbackGUM(c);
-    return realGUM(c).catch(function (err) {
-      if (c && c.video) throw err;
-      if (err && err.name === 'NotAllowedError') tip('Microphone is blocked — using your phone recorder instead.', 'الميكروفون مقفول، راح نستخدم مسجّل الهاتف');
-      return fallbackGUM(c);
-    });
-  }
-  try {
-    if (!md) Object.defineProperty(N, 'mediaDevices', { value: { getUserMedia: gum, enumerateDevices: function () { return Promise.resolve([]); } }, configurable: true });
-    else md.getUserMedia = gum;
-  } catch (e) {}
-  /* very old API some lessons may call */
-  if (!N.getUserMedia) N.getUserMedia = function (c, ok, bad) { gum(c).then(ok, bad); };
-
+    }
+    function PhoneRecorder(stream) {
+      this.stream = stream; this.state = 'inactive'; this.mimeType = ''; this._l = {};
+      this.ondataavailable = this.onstop = this.onstart = this.onerror = this.onpause = this.onresume = null;
+      this.audioBitsPerSecond = 0;
+    }
+    PhoneRecorder.prototype = {
+      addEventListener: function (t, f) { (this._l[t] = this._l[t] || []).push(f); },
+      removeEventListener: function (t, f) { var a = this._l[t] || []; var i = a.indexOf(f); if (i > -1) a.splice(i, 1); },
+      dispatchEvent: function () { return true; },
+      _emit: function (t, ev) { ev = ev || {}; ev.type = t; ev.target = this; if (typeof this['on' + t] === 'function') try { this['on' + t](ev); } catch (e) { console.error(e); }
+        (this._l[t] || []).slice().forEach(function (f) { try { f(ev); } catch (e) { console.error(e); } }); },
+      start: function () {
+        var me = this; if (me.state === 'recording') return;
+        me.state = 'recording'; me._emit('start');
+        tip('🎙 Your phone recorder opens now — record, then tap ✓ / Done.', 'سيفتح مسجّل الهاتف: سجّل صوتك ثم اضغط ✓ أو تم');
+        me._p = pickAudio(function () {
+          tip('No recording yet — tap the record / mic button again to open the recorder.', 'ما تم التسجيل بعد — اضغط زر التسجيل مرة ثانية');
+        }).then(function (f) {
+          me.mimeType = f.type || 'audio/mp4'; me._emit('dataavailable', { data: f });
+          me.state = 'inactive'; me._emit('stop');
+        });
+      },
+      stop: function () {
+        /* a tap on "Stop" gives a fresh user gesture: reopen the recorder if the phone blocked it */
+        if (this.state === 'recording' && picker && !picker.files.length && picker.__open) picker.__open();
+      },
+      pause: function () {}, resume: function () {}, requestData: function () {}
+    };
+    var RealMR = W.MediaRecorder;
+    function MR(stream, opts) {
+      if (!RealMR || (stream && stream.__myalmFake)) return new PhoneRecorder(stream);
+      return opts ? new RealMR(stream, opts) : new RealMR(stream);
+    }
+    MR.isTypeSupported = function (t) { return RealMR && RealMR.isTypeSupported ? RealMR.isTypeSupported(t) : /^audio\//.test(t || ''); };
+    if (RealMR) MR.prototype = RealMR.prototype;
+    try { W.MediaRecorder = MR; } catch (e) {}
+  
+    var md = N.mediaDevices;
+    var realGUM = md && md.getUserMedia ? md.getUserMedia.bind(md) : null;
+    function fallbackGUM(c) {
+      if (c && c.video) return Promise.reject(new Error('NotSupported'));
+      APP.phoneRecorder = true; return Promise.resolve(silentStream());
+    }
+    function gum(c) {
+      if (!realGUM || !secure) return fallbackGUM(c);
+      return realGUM(c).catch(function (err) {
+        if (c && c.video) throw err;
+        if (err && err.name === 'NotAllowedError') tip('Microphone is blocked — using your phone recorder instead.', 'الميكروفون مقفول، راح نستخدم مسجّل الهاتف');
+        return fallbackGUM(c);
+      });
+    }
+    try {
+      if (!md) Object.defineProperty(N, 'mediaDevices', { value: { getUserMedia: gum, enumerateDevices: function () { return Promise.resolve([]); } }, configurable: true });
+      else md.getUserMedia = gum;
+    } catch (e) {}
+    /* very old API some lessons may call */
+    if (!N.getUserMedia) N.getUserMedia = function (c, ok, bad) { gum(c).then(ok, bad); };
+  
+    })();
   /* ---------- 3. UI: small toast + install / get-the-app sheet ---------- */
   var css = '.myalm-tip{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:2147483600;background:#1E2A5A;color:#fff;font:600 14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:10px 16px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:88vw;text-align:center;opacity:0;transition:opacity .25s;pointer-events:none}'
     + '.myalm-tip.on{opacity:1}.myalm-tip .myalm-ar,.myalm-sh .myalm-ar{display:block;direction:rtl;font-weight:500;color:inherit;opacity:1;margin-top:2px;font-size:inherit}'
@@ -175,7 +181,8 @@
       + '<p><b>Best:</b> open the app link once and install it — it then works forever, even offline.</p>'
       + '<p class="myalm-ar"><b>الأفضل:</b> افتح رابط التطبيق مرة وحدة وثبّته — بعدها يشتغل دائماً حتى بدون إنترنت.</p>'
       + (WEB ? '' : '<div class="note">Ask your teacher for the app link. <span class="myalm-ar">اطلب رابط التطبيق من الأستاذ</span></div>')
-      + '<div class="note">In this file copy, 🎙 recording still works: your phone’s recorder opens, you record, then tap ✓.<span class="myalm-ar">بهذي النسخة التسجيل يشتغل عن طريق مسجّل الهاتف: سجّل ثم اضغط ✓</span></div>'
+      + (INAPP_REC ? '<div class="note">🎙 To record your voice inside the lesson, open the app link above in Chrome or Safari and allow the microphone.<span class="myalm-ar">لتسجيل صوتك داخل الدرس افتح رابط التطبيق في Chrome أو Safari واسمح باستخدام الميكروفون</span></div>' : ''
+      + '<div class="note">In this file copy, 🎙 recording still works: your phone’s recorder opens, you record, then tap ✓.<span class="myalm-ar">بهذي النسخة التسجيل يشتغل عن طريق مسجّل الهاتف: سجّل ثم اضغط ✓</span></div>')
       + '<div class="row">' + link + '<button class="no" data-close>Continue here</button></div>');
   }
   function hideFab() { if (fab) { fab.remove(); fab = null; } }
