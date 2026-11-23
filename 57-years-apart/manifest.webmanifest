@@ -1,0 +1,32 @@
+{
+ "name": "57 Years Apart · Lesson 11 · MYALM Education",
+ "short_name": "57 Years Apart",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#FFFFFF",
+ "theme_color": "#15100D",
+ "description": "Lesson 11: 57 Years Apart. A boy and a man talk about life. Interactive listening and speaking practice by MYALM Education.",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
