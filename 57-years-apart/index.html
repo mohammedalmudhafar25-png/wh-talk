@@ -825,7 +825,7 @@ let liveNow=false;
 function lamp(mode,label){const hg=$('#mascot');if(hg)hg.classList.toggle('flow',mode==='live'||mode==='rec');liveNow=mode==='live';const l=$('#lamp');l.classList.toggle('live',mode==='live');l.classList.toggle('rec',mode==='rec');if(label!=null)$('#nowp').textContent=label;mascot(mode==='live'?'talk':mode==='rec'?'listen':'')}
 function stopAudio(){tok++;if(stopFn){stopFn();stopFn=null}try{P.pause()}catch(e){}lamp(recSt?'rec':'off')}
 function meta(){return new Promise(r=>{if(P.readyState>=1)return r();const f=()=>{P.removeEventListener('loadedmetadata',f);r()};P.addEventListener('loadedmetadata',f);setTimeout(r,4000)})}
-async function seg(k,s,e,label,rOver){stopAudio();const my=++tok;const u=mURL(k);if(!u)return false;ac();
+async function seg(k,s,e,label,rOver){stopAudio();if(typeof vidStop==='function')vidStop();if(typeof stopSting==='function')stopSting();const my=++tok;const u=mURL(k);if(!u)return false;ac();
  if(P.dataset.k!==k){P.src=u;P.dataset.k=k;P.load()}await meta();if(my!==tok)return false;try{P.currentTime=s}catch(x){}
  const r=rOver||rate();P.playbackRate=r;P.defaultPlaybackRate=r;P.preservesPitch=true;P.webkitPreservesPitch=true;P.volume=S.vol;
  try{await P.play()}catch(x){return false}if(my!==tok)return false;lamp('live',label||'');
@@ -872,7 +872,7 @@ async function getMic(){const p=micProblem();if(p){const e=new Error(p);e.name=p
  try{return await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}})}
  catch(e){if(e&&(e.name==='OverconstrainedError'||e.name==='TypeError'||e.name==='NotReadableError')){try{return await navigator.mediaDevices.getUserMedia({audio:true})}catch(e2){throw e2}}throw e}}
 function elapsed(st){return (Date.now()-st.t0-st.paused-(st.isPaused?Date.now()-st.pAt:0))/1000}
-async function startRec(onText,o){o=o||{};stopAudio();ac();const st={chunks:[],text:'',alts:[],t0:Date.now(),paused:0,pAt:0,events:[],restarts:0};
+async function startRec(onText,o){o=o||{};stopAudio();if(typeof vidStop==='function')vidStop();if(typeof stopSting==='function')stopSting();ac();const st={chunks:[],text:'',alts:[],t0:Date.now(),paused:0,pAt:0,events:[],restarts:0};
  try{st.stream=await getMic();st.fake=!!st.stream.__myalmFake;micOK=!st.fake;setMicChip();
   if(!st.fake&&ac()){try{micSrc=AC.createMediaStreamSource(st.stream);micSrc.connect(AN)}catch(e){}}
   const sup=t=>!t||(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t));
@@ -918,15 +918,15 @@ function fmt(s){s=Math.max(0,s|0);return (s/60|0)+':'+String(s%60).padStart(2,'0
 function recorder(o){o=o||{};const wrap=el('div',{cls:'rec'+(o.big?' big':'')}),cv=el('canvas'),tm=el('span',{cls:'tm'},'0:00'),said=el('div',{cls:'said'},o.hint||(useSR()?'Tap the mic and speak. Your words appear here.':'Tap the mic, speak, then play your take back.')),acts=el('div',{cls:'acts'});
  let on=false,iv=null,raf=null,paused=false;const b=el('button',{cls:'micb',type:'button','aria-label':'Record',html:ic('mic')});const pz=B('pause','','ghost sm',()=>{paused=!paused;pauseRec(paused);pz.innerHTML=ic(paused?'play':'pause');lamp(paused?'off':'rec',paused?'Paused':'Recording')},'Pause / resume');pz.style.display='none';
  function meter(){const ctx=cv.getContext('2d');const w=cv.width=cv.clientWidth*devicePixelRatio,h=cv.height=cv.clientHeight*devicePixelRatio;ctx.clearRect(0,0,w,h);if(AN){const d=new Uint8Array(AN.fftSize);AN.getByteTimeDomainData(d);const g=ctx.createLinearGradient(0,0,w,0);g.addColorStop(0,'#E63946');g.addColorStop(.5,'#FFC93C');g.addColorStop(1,'#2EC4B6');ctx.strokeStyle=g;ctx.lineWidth=2.4*devicePixelRatio;ctx.beginPath();for(let i=0;i<d.length;i+=4){const x=i/d.length*w,y=d[i]/255*h;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}if(on)raf=requestAnimationFrame(meter)}
- async function start(){on=true;paused=false;b.classList.add('on');b.innerHTML=ic('stop');acts.innerHTML='';if(o.pausable)pz.style.display='';let el0=0,last=Date.now();iv=setInterval(()=>{const n=Date.now();if(!paused)el0+=n-last;last=n;tm.textContent=fmt(el0/1000)+(o.max?' / '+fmt(o.max):'');if(o.max&&el0/1000>=o.max)stop()},200);const st0=await startRec(t=>{said.textContent='“'+t+'”';o.onText&&o.onText(t)},{noSR:o.noSR,onEnd:()=>stop()});if(st0&&st0.noMic){on=false;clearInterval(iv);b.classList.remove('on');b.innerHTML=ic('mic');pz.style.display='none';tm.textContent='0:00';await stopRec();said.innerHTML='The microphone is not available. ';said.append(B('mic','Fix microphone','gold sm',()=>micHelp(st0.err)));micHelp(st0.err);return}if(st0&&st0.fake)said.textContent='Your phone’s recorder opens: record, then tap ✓ / Done.';else if(!useSR())said.textContent='Recording… speak clearly. Tap the button again to stop.';meter();o.onStart&&o.onStart()}
+ async function start(){on=true;paused=false;b.classList.add('on');b.innerHTML=ic('stop');acts.innerHTML='';if(o.pausable)pz.style.display='';let el0=0,last=Date.now();iv=setInterval(()=>{if(!document.body.contains(wrap)){stop();return}const n=Date.now();if(!paused)el0+=n-last;last=n;tm.textContent=fmt(el0/1000)+(o.max?' / '+fmt(o.max):'');if(o.max&&el0/1000>=o.max)stop()},200);const st0=await startRec(t=>{said.textContent='“'+t+'”';o.onText&&o.onText(t)},{noSR:o.noSR,onEnd:()=>stop()});if(st0&&st0.noMic){on=false;clearInterval(iv);b.classList.remove('on');b.innerHTML=ic('mic');pz.style.display='none';tm.textContent='0:00';await stopRec();said.innerHTML='The microphone is not available. ';said.append(B('mic','Fix microphone','gold sm',()=>micHelp(st0.err)));micHelp(st0.err);return}if(st0&&st0.fake)said.textContent='Your phone’s recorder opens: record, then tap ✓ / Done.';else if(!useSR())said.textContent='Recording… speak clearly. Tap the button again to stop.';meter();o.onStart&&o.onStart()}
  async function stop(){if(!on)return;on=false;clearInterval(iv);cancelAnimationFrame(raf);b.classList.remove('on');b.innerHTML=ic('mic');pz.style.display='none';const r=await stopRec();if(!r)return;if(r.blob&&!r.fake&&r.blob.size>0){const lv=await takeLevel(r.blob);if(lv!=null&&lv<0.004){said.innerHTML='Your take is silent: the microphone did not hear you. ';said.append(B('mic','Fix microphone','gold sm',()=>micHelp()));if(r.sr&&IS_MOBILE){S.wc=false;save()}acts.innerHTML='';return}}if(r.srFail&&!r.text)said.textContent='Recorded. (The live word check is not available on this device, so play your take back to check yourself.)';else if(o.noSR)said.textContent=r.blob?'Recorded. Your take is ready below.':'Nothing was recorded. Check the microphone.';else if(r.text)said.textContent='“'+r.text+'”';else if(r.sr)said.textContent='No words were caught. Play your take back to check yourself.';else if(r.blob)said.textContent='Recorded! Play your take back and check yourself.';
-  if(r.blob){const u=URL.createObjectURL(r.blob);const a=new Audio(u);a.setAttribute('playsinline','');acts.append(...[B('play','My take','ghost sm',()=>{stopAudio();a.currentTime=0;a.play()}),o.compare?B('headphones','Original, then me','ghost sm',async()=>{await o.compare();a.currentTime=0;a.play()}):null,B('save','Save','ghost sm',()=>saveTake(o.label||'Take',r.blob,r.text)),el('a',{href:u,download:'CoolTalk_'+(o.label||'take').replace(/\W+/g,'_')+extOf(r.blob)},B('download','Download','ghost sm'))].filter(Boolean))}
+  if(r.blob){const u=URL.createObjectURL(r.blob);const a=new Audio(u);a.setAttribute('playsinline','');acts.append(...[B('play','My take','ghost sm',()=>{stopAudio();a.currentTime=0;a.play()}),o.compare?B('headphones','Original, then me','ghost sm',async()=>{await o.compare();a.currentTime=0;a.play()}):null,B('save','Save','ghost sm',()=>saveTake(o.label||'Take',r.blob,r.text)),el('a',{href:u,download:'57YearsApart_'+(o.label||'take').replace(/\W+/g,'_')+extOf(r.blob)},B('download','Download','ghost sm'))].filter(Boolean))}
   o.onDone&&o.onDone(r,wrap)}
  b.onclick=()=>on?stop():start();wrap.stopRec=stop;wrap.startRec=start;wrap.isOn=()=>on;wrap.append(el('div',{cls:'rtop'},b,pz,cv,tm),said,acts);return wrap}
-let DB=null;function db(){return new Promise(r=>{if(DB)return r(DB);try{const q=indexedDB.open('cooltalk_ep10',1);q.onupgradeneeded=()=>q.result.createObjectStore('t',{keyPath:'id',autoIncrement:true});q.onsuccess=()=>{DB=q.result;r(DB)};q.onerror=()=>r(null)}catch(e){r(null)}})}
+let DB=null;function db(){return new Promise(r=>{if(DB)return r(DB);try{const q=indexedDB.open('myalm_l11_57years',1);q.onupgradeneeded=()=>q.result.createObjectStore('t',{keyPath:'id',autoIncrement:true});q.onsuccess=()=>{DB=q.result;r(DB)};q.onerror=()=>r(null)}catch(e){r(null)}})}
 async function saveTake(label,blob,text){const d=await db();if(!d)return toast('Saving is not supported here. Use Download.','no');try{d.transaction('t','readwrite').objectStore('t').add({label,blob,text:text||'',date:new Date().toLocaleString()});toast('Saved to My takes','ok')}catch(e){toast('Could not save. Use Download.','no')}}
 async function showTakes(){const L=$('#takeList');L.innerHTML='';const d=await db();const rs=d?await new Promise(r=>{const q=d.transaction('t').objectStore('t').getAll();q.onsuccess=()=>r(q.result||[]);q.onerror=()=>r([])}):[];if(!rs.length)L.append(el('p',{cls:'muted'},'No takes yet. Every segment has a recorder.'));
- rs.reverse().forEach(t=>{const u=URL.createObjectURL(t.blob),a=new Audio(u);L.append(el('div',{cls:'recrow'},el('b',{},t.label,el('br'),el('small',{cls:'muted'},t.date+(t.text?' · “'+t.text.slice(0,70)+'”':''))),B('play','','ghost sm',()=>{stopAudio();a.play()}),el('a',{href:u,download:'CoolTalk_'+t.label.replace(/\W+/g,'_')+extOf(t.blob)},B('download','','ghost sm')),B('cross','','ghost sm',async()=>{const d=await db();d.transaction('t','readwrite').objectStore('t').delete(t.id);showTakes()})))});$('#takes').classList.add('on')}
+ rs.reverse().forEach(t=>{const u=URL.createObjectURL(t.blob),a=new Audio(u);L.append(el('div',{cls:'recrow'},el('b',{},t.label,el('br'),el('small',{cls:'muted'},t.date+(t.text?' · “'+t.text.slice(0,70)+'”':''))),B('play','','ghost sm',()=>{stopAudio();a.play()}),el('a',{href:u,download:'57YearsApart_'+t.label.replace(/\W+/g,'_')+extOf(t.blob)},B('download','','ghost sm')),B('cross','','ghost sm',async()=>{const d=await db();d.transaction('t','readwrite').objectStore('t').delete(t.id);showTakes()})))});$('#takes').classList.add('on')}
 /* ================= text tools ================= */
 const HOMO={two:'to',too:'to','2':'to',four:'for',their:'there',theyre:'there',youre:'your',u:'you',im:'i',gonna:'going'};
 const normW=s=>(s||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(Boolean).map(w=>HOMO[w]||w);
@@ -951,7 +951,7 @@ function timerEl(sec,onEnd,o){o=o||{};const w=el('div',{cls:'timer'});if(!sec){w
  w.stop=()=>{clearInterval(iv);w.classList.add('done')};draw();return w}
 /* ================= stepper: free navigation ================= */
 function stepper(n,box,items,render,done,o){o=o||{};let i=o.start||0;const marks={};let got=0;
- function mark(idx,ok){if(marks[idx]!=null)return;marks[idx]=ok;if(typeof TM!=='undefined')setTimeout(()=>TM.answered(ok),900);if(ok){got++;addScore(n,1)}}
+ function mark(idx,ok){if(marks[idx]!=null)return;marks[idx]=ok;const dt=box.querySelectorAll('.stepnav .dot')[idx];if(dt)dt.classList.add(ok?'ok':'no');if(typeof TM!=='undefined')setTimeout(()=>TM.answered(ok),900);if(ok){got++;addScore(n,1)}}
  function draw(){stopAudio();if(recSt)stopRec();if(typeof vidStop==='function')vidStop();bar(n,i/items.length);box.innerHTML='';const nav=el('div',{cls:'stepnav'},B('prev','','ghost sm',()=>{if(i>0){i--;fx.flip();draw()}},'Previous'),el('div',{cls:'dots'},items.map((_,k)=>el('button',{cls:'dot'+(k===i?' on':'')+(marks[k]===true?' ok':marks[k]===false?' no':''),type:'button',title:'Item '+(k+1),on:{click:()=>{i=k;fx.flip();draw()}}}))),el('span',{cls:'cnt'},(i+1)+' / '+items.length),B('next','','ghost sm',()=>{if(i<items.length-1){i++;fx.flip();draw()}else finish()},'Next'),B('check','Finish','ghost sm',finish));
   const body=el('div',{cls:'stepbody pop'});box.append(nav,body);render(items[i],body,{idx:i,mark:ok=>mark(i,ok),next:()=>{if(i<items.length-1){i++;draw()}else finish()},answered:marks[i]!=null})}
  function finish(){stopAudio();done(got,items.length)}draw();return{redraw:draw}}
@@ -979,53 +979,11 @@ jingle=function(){if(!MEDIA.sfx_jingle)return synthJingle();return sfx('jingle',
 let bedIt=null;const synthBed=bed;
 bed=function(on){if(!MEDIA.sfx_bed)return synthBed(on);const c=ac();if(bedIt){const it=bedIt;bedIt=null;try{it.gn.gain.setTargetAtTime(0,c.currentTime,.25);it.s.stop(c.currentTime+1.5)}catch(e){}playing.delete(it)}
  if(recSt)recSt.events.push({k:'bed',on:!!on,t:elapsed(recSt)});if(on)sfx('bed',0,{loop:true}).then(it=>{if(!it)return;bedIt=it;it.gn.gain.setTargetAtTime(.55,c.currentTime,.6)})};
-const PADS=[['applause','clap','Applause',1],['laugh','smile','Laugh track',1],['drumroll','drum','Drum roll',1],['rimshot','spark','Ba-dum-tss',1],['whoosh','bolt','Whoosh',1],
- ['ding','bell','Ding!',.9],['victory','star','Victory',1],['comedy','music','Comedy',1],['fail','cross','Oh no!',1],['tadah','sun','Ta-dah!',1]];
-function padButtons(){const box=el('div',{cls:'padgrid'});PADS.forEach(([k,icon,label,g],i)=>{const b=B(icon,label,'pad3');b.style.setProperty('--pc',['#FF5C69','#FFC93C','#8B6CFF','#F26B21','#3A86FF','#2EC4B6','#FFC93C','#2D9D78','#E63946','#8B6CFF'][i]);b.dataset.k=k;
-  b.onclick=async()=>{b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit');const it=await sfx(k,g,{pad:true,onend:()=>b.classList.remove('on')});if(it){b.classList.add('on')}else{({applause:fx.applause,drumroll:fx.drumroll,rimshot:fx.rimshot,whoosh:fx.whoosh,ding:fx.ding})[k]?.()}};box.append(b)});
- const lv=el('input',{type:'range',min:.1,max:1,step:.05,value:padLevel,'aria-label':'Pad volume'});lv.oninput=()=>{padLevel=+lv.value};
- return [box,el('div',{cls:'padfoot'},el('label',{},'Pad level'),lv,B('stop','Stop sounds','ghost xs',()=>stopSfx(false)))]}
 /* warm the decoder once the studio opens so the first tap is instant */
-function preloadSfx(){['applause','drumroll','rimshot','ding','jingle','bed','laugh','whoosh','victory','comedy','fail','tadah'].forEach((k,i)=>setTimeout(()=>sfxLoad(k),i*120))}
+function preloadSfx(){['jingle','st1','st2','st3','st4','ding','applause','tadah','whoosh'].forEach((k,i)=>setTimeout(()=>sfxLoad(k),i*120))}
 
-/* ================= professional episode: offline mix of voice + jingle + pads + bed ================= */
-function decodeAB(c,ab){return new Promise((res,rej)=>{const p=c.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej)})}
-async function renderEpisode(take,opt){opt=opt||{};const c=ac();const voice=await decodeAB(c,await take.blob.arrayBuffer());
- const need=['jingle','applause'];if(opt.bed)need.push('bed');(take.events||[]).forEach(e=>{if(e.k!=='bed'&&!need.includes(e.k))need.push(e.k)});
- const B={};for(const k of need)B[k]=await sfxLoad(k);
- /* trim silence at both ends of the voice */
- const ch=voice.getChannelData(0),thr=.012;let a=0,z=ch.length-1;while(a<z&&Math.abs(ch[a])<thr)a++;while(z>a&&Math.abs(ch[z])<thr)z--;
- const pre=Math.max(0,a/voice.sampleRate-.15),vlen=Math.min(voice.duration,z/voice.sampleRate+.35)-pre;
- let sum=0,n=0;for(let i=a;i<z;i+=4){sum+=ch[i]*ch[i];n++}const rms=Math.sqrt(sum/Math.max(1,n))||.05;const makeup=Math.min(10,Math.max(.6,.12/rms));
- const R=44100,vStart=B.jingle?5.0:.4,end=vStart+vlen,tail=B.applause?4.2:1.0;
- const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;const oc=new OC(2,Math.ceil((end+tail)*R),R);
- const master=oc.createDynamicsCompressor();master.threshold.value=-2;master.knee.value=0;master.ratio.value=20;master.attack.value=.002;master.release.value=.1;master.connect(oc.destination);
- /* voice chain: high-pass, presence lift, compressor, make-up gain */
- const vs=oc.createBufferSource();vs.buffer=voice;const hp=oc.createBiquadFilter();hp.type='highpass';hp.frequency.value=85;hp.Q.value=.7;
- const lo=oc.createBiquadFilter();lo.type='lowshelf';lo.frequency.value=180;lo.gain.value=-1.5;const pr=oc.createBiquadFilter();pr.type='peaking';pr.frequency.value=3200;pr.Q.value=.9;pr.gain.value=2.5;
- const air=oc.createBiquadFilter();air.type='highshelf';air.frequency.value=9000;air.gain.value=1.5;
- const cp=oc.createDynamicsCompressor();cp.threshold.value=-20;cp.knee.value=8;cp.ratio.value=3.2;cp.attack.value=.006;cp.release.value=.18;
- const mk=oc.createGain();mk.gain.value=makeup*1.35;vs.connect(hp).connect(lo).connect(pr).connect(air).connect(cp).connect(mk).connect(master);vs.start(vStart,pre,vlen);
- const play=(k,t,g,o)=>{const b=B[k];if(!b)return null;const s=oc.createBufferSource();s.buffer=b;s.loop=!!(o&&o.loop);const gn=oc.createGain();gn.gain.value=g;s.connect(gn).connect(master);s.start(Math.max(0,t));return{s,gn}};
- if(B.jingle){const j=play('jingle',0,.8);j.gn.gain.setValueAtTime(.8,vStart-.4);j.gn.gain.linearRampToValueAtTime(.18,vStart+.6)}
- if(opt.bed&&B.bed){const b=play('bed',vStart-.6,0,{loop:true});b.gn.gain.setValueAtTime(0,vStart-.6);b.gn.gain.linearRampToValueAtTime(.16,vStart+.8);b.gn.gain.setValueAtTime(.16,end-.2);b.gn.gain.linearRampToValueAtTime(.32,end+.6);b.gn.gain.linearRampToValueAtTime(0,end+tail-.2);b.s.stop(end+tail)}
- (take.events||[]).forEach(e=>{if(e.k!=='bed'&&e.t<vlen+pre)play(e.k,vStart+Math.max(0,e.t-pre),.42*Math.min(1,e.g*1.4))});
- if(B.applause)play('applause',end+.15,.5);
- const out=await new Promise((res,rej)=>{oc.oncomplete=e=>res(e.renderedBuffer);const p=oc.startRendering();if(p&&p.then)p.then(res,rej)});return out}
-function wavBlob(buf){const nc=buf.numberOfChannels,len=buf.length,R=buf.sampleRate,ab=new ArrayBuffer(44+len*nc*2),v=new DataView(ab);const w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
- w(0,'RIFF');v.setUint32(4,36+len*nc*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,nc,true);v.setUint32(24,R,true);v.setUint32(28,R*nc*2,true);v.setUint16(32,nc*2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,len*nc*2,true);
- const C=[];for(let c=0;c<nc;c++)C.push(buf.getChannelData(c));let o=44;for(let i=0;i<len;i++)for(let c=0;c<nc;c++){const x=Math.max(-1,Math.min(1,C[c][i]));v.setInt16(o,x<0?x*32768:x*32767,true);o+=2}return new Blob([ab],{type:'audio/wav'})}
 async function shareOrSave(blob,name,title){const f=new File([blob],name,{type:blob.type});try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:title||name});return}}catch(e){if(e&&e.name==='AbortError')return}
  const a=el('a',{href:URL.createObjectURL(blob),download:name});document.body.append(a);a.click();setTimeout(()=>a.remove(),1000);toast('Saved to your downloads','ok')}
-function episodeBox(take,st){const box=el('div',{cls:'epbox'});let ep=null,busy=false,au=null;const bedT=el('input',{type:'checkbox'});bedT.checked=true;
- const status=el('div',{cls:'muted small center'},'Your episode = jingle + your voice (studio-polished) + your sound pads + applause.');
- const fname=()=>'CoolTalk_'+((st&&st.name)||'my_episode').replace(/\W+/g,'_')+'.wav';
- async function mix(){if(ep&&ep.bed===bedT.checked)return ep.blob;if(busy)return null;busy=true;status.textContent='Mixing your episode…';try{const b=await renderEpisode(take,{bed:bedT.checked});ep={blob:wavBlob(b),bed:bedT.checked,dur:b.duration};status.textContent='Episode ready · '+Math.round(b.duration)+' seconds · studio quality (WAV)'}catch(e){status.textContent='Could not mix here. Your raw take is still saved below.';ep=null}busy=false;return ep&&ep.blob}
- const playB=B('play','Play my episode','t',async()=>{if(au&&!au.paused){au.pause();playB.innerHTML=ic('play')+'<span>Play my episode</span>';return}const b=await mix();if(!b)return;stopAudio();stopSfx(true);bed(false);au=new Audio(URL.createObjectURL(b));au.setAttribute('playsinline','');au.volume=S.vol;au.onended=()=>{playB.innerHTML=ic('play')+'<span>Play my episode</span>'};au.play().catch(()=>{});playB.innerHTML=ic('pause')+'<span>Pause</span>'});
- box.append(el('label',{cls:'tgl'},bedT,el('span',{},'Soft music bed under my voice')),el('div',{cls:'row'},playB,
-  B('download','Save episode','gold',async()=>{const b=await mix();if(b)shareOrSave(b,fname(),'My Cool Talk episode')}),
-  B('save','Keep in My takes','ghost',async()=>{const b=await mix();if(b)saveTake('Podcast episode · '+((st&&st.name)||''),b,take.text)})),status);
- bedT.onchange=()=>{ep=null;status.textContent='Music changed: tap Play to remix.'};return box}
 
 /* ================= 57 Years Apart · four listening & speaking activities ================= */
 const SEGS=[
@@ -1034,7 +992,7 @@ const SEGS=[
  {n:3,t:'Say It Like a Native',d:'Hear a real line, then say it again with power language',c:'#D2693A',i:'upgrade',sk:['LISTEN','SPEAK']},
  {n:4,t:'In the Chair',d:'Their real questions, now asked to you',c:'#6FB7A8',i:'chair',sk:['LISTEN','SPEAK']}];
 const KIND={word:['ADVANCED WORD','gem','#4AA3DF','WORD'],expr:['NATIVE EXPRESSION','quote','#E9A93B','EXPRESSION'],chunk:['SPEAKING CHUNK','blocks','#6FB7A8','CHUNK']};
-const short=p=>p.term.replace(/[…]/g,'').replace(/\s+/g,' ').replace(/,\s*$/,'').trim();
+const short=p=>p.term.replace(/\s*…\s*$/,'').replace(/,\s*$/,'').trim();
 function pChips(list,cls){const w=el('div',{cls:'power '+(cls||'')});list.forEach(p=>w.append(el('span',{},short(p))));w.update=t=>{let n=0;[...w.children].forEach((c,i)=>{const h=list[i].chk.some(x=>has(t,x));c.classList.toggle('hit',h);if(h)n++});return n};return w}
 const PW=D.power;
 const avatar=sp=>'<span class="av2">'+lp(sp==='B'?'boy':'man')+'</span>';
@@ -1043,11 +1001,12 @@ function renderHub(){const T=$('#tracks');if(!T)return;T.innerHTML='';SEGS.forEa
  const c=$('#contWrap');c.innerHTML='';if(S.last&&S.last!=='hub'){const s=SEGS.find(x=>'s'+x.n===S.last);if(s)c.append(B('replay','Continue: '+s.t,'t',()=>go(S.last)))}}
 let cur='hub';
 function go(id){stopAudio();if(recSt)stopRec();vidStop();if(typeof stopSfx==='function')stopSfx(false);$$('.modal.on').forEach(m=>m.classList.remove('on'));$$('.scr').forEach(s=>s.classList.toggle('on',s.id===id));cur=id;S.last=id;save();window.scrollTo({top:0,behavior:'smooth'});
- if(id==='hub'){renderHub();return}const n=+id.slice(1);const b=$('#sc'+n);if(b)b.textContent=S.score[n]||0;INIT[n]();sfx('st'+n,.8)}
+ if(id==='hub'){renderHub();return}const n=+id.slice(1);const b=$('#sc'+n);if(b)b.textContent=S.score[n]||0;INIT[n]();if(S.fx)sfx('st'+n,.7).then(it=>{stIt=it})}
+let stIt=null;function stopSting(){const it=stIt;stIt=null;if(!it)return;try{const c=ac();it.gn.gain.setTargetAtTime(0,c.currentTime,.15);it.s.stop(c.currentTime+.6)}catch(e){}}
 /* ---------- the video: one player, moved into whichever card needs it ---------- */
 const VID=el('video',{playsinline:'',preload:'metadata','webkit-playsinline':'',poster:IMG.thumb});let vEnd=null,vRate=1,vCC=true;
 function vidStop(){try{VID.pause()}catch(e){}vEnd=null}
-function vidRange(s,e,r){stopAudio();if(!VID.src)VID.src=mURL('v');vRate=r||1;VID.playbackRate=vRate;const go2=()=>{try{VID.currentTime=s}catch(x){}vEnd=e;VID.play().catch(()=>{})};if(VID.readyState>=1)go2();else VID.addEventListener('loadedmetadata',go2,{once:true});
+function vidRange(s,e,r){stopAudio();if(!VID.src)VID.src=mURL('v');vRate=r||1;VID.playbackRate=vRate;stopSting();vEnd=e;if(VID.readyState>=1){try{VID.currentTime=s}catch(x){}VID.play().catch(()=>{})}else{VID.addEventListener('loadedmetadata',()=>{try{VID.currentTime=s}catch(x){}},{once:true});VID.play().catch(()=>{})}
  return new Promise(res=>{const f=()=>{if(vEnd==null||VID.paused){VID.removeEventListener('pause',f);res()}};VID.addEventListener('pause',f)})}
 function lineAt(t){return D.lines.findIndex(l=>t>=l.s&&t<l.e)}
 function player(o){o=o||{};const wrap=el('div',{cls:'player2'}),box=el('div',{cls:'vbox2'}),cap=el('div',{cls:'cap2'}),big=el('button',{cls:'bigplay2',type:'button','aria-label':'Play',html:'<img src="'+IMG.play+'" alt="">'});
@@ -1070,11 +1029,13 @@ function powerPanel(){const m=$('#ctxm'),bx=m.querySelector('.box');bx.innerHTML
  bx.append(el('div',{cls:'top'},el('h2',{html:lp('lantern','sm')+' Power Language'}),B('cross','','ghost sm',()=>{m.classList.remove('on');bx.classList.remove('wide');stopAudio()})),el('p',{cls:'muted small'},'Use these in Activities 3 and 4. They light up when you say them.'),tabs,grid);draw();m.classList.add('on')}
 /* ================= 1 · REWIND THE MOMENT ================= */
 function kcheck(t,keys){return keys.every(k=>k.split('|').some(x=>has(t,x)))}
+/* true/false said out loud: "not true", "isn't true", "wrong" count as false */
+function tfSaid(t){const s=' '+normW(t).join(' ')+' ';if(/ (false|wrong|incorrect|not true|isnt true|its not|not right|no )/.test(s))return false;if(/ (true|right|correct|yes)/.test(s))return true;return null}
 function init1(){const box=$('#w1');box.innerHTML='';bar(1,0);stepper(1,box,D.rewind,(q,c,st)=>{const i=D.rewind.indexOf(q);const r=[D.lines[q.c[0]].s,D.lines[q.c[1]].e];const tmr=timerEl(S.timer?Math.max(45,S.timer):0);
  const card=el('div',{cls:'qcard tape'},el('div',{cls:'qhead'},el('span',{cls:'qtag'},(q.tf==null?'MOMENT ':'TRUE OR FALSE · ')+(i+1)+' / '+D.rewind.length),tmr),el('div',{cls:'tapelabel'},el('span',{cls:'reel'}),el('div',{cls:'qbig'},q.q),el('span',{cls:'reel'})),player({range:r}),
   el('div',{cls:'row'},B('play','Play the moment','o',()=>vidRange(r[0],r[1])),B('slow','Slower','ghost',()=>vidRange(r[0],r[1],.75))),el('div',{cls:'lab'},q.tf==null?'Answer out loud in a full sentence':'Say “True” or “False”, then say why'),chipsRow(q.tf==null?['I think he said that …','According to the boy / the old man, …']:['That’s true, because …','That’s false. Actually, …']));
  const out=el('div');card.append(recorder({label:'Rewind '+(i+1),max:45,onDone:r2=>{tmr.stop();out.innerHTML='';const model=()=>{out.append(el('div',{cls:'model'},el('span',{cls:'mlab',html:ic('check')+'MODEL ANSWER'}),el('div',{},q.model)),el('div',{cls:'row'},B('video','Hear the proof','ghost',()=>vidRange(r[0],r[1])),B('next','Next moment','gold',st.next)))};
-   if(r2.text){const ok=kcheck(r2.text,q.keys),n=normW(r2.text).length;st.mark(ok);fx[ok?'ok':'no']();if(ok)praise();out.append(fbk(ok,ok?(n>=6?'Spot on, and in a full sentence!':'Right idea! Next time, say it in a full sentence.'):'Not quite. Watch the moment again and compare.'));model()}
+   if(r2.text){const ok=q.tf==null?kcheck(r2.text,q.keys):tfSaid(r2.text)===q.tf,n=normW(r2.text).length;st.mark(ok);fx[ok?'ok':'no']();if(ok)praise();out.append(fbk(ok,ok?(n>=6?'Spot on, and in a full sentence!':'Right idea! Next time, say it in a full sentence.'):'Not quite. Watch the moment again and compare.'));model()}
    else{model();out.append(el('div',{cls:'row'},el('span',{cls:'muted small'},'Did you get it?'),B('check','Yes','t sm',()=>{st.mark(true);fx.ok();st.next()}),B('replay','Not yet','ghost sm',()=>{st.mark(false);vidRange(r[0],r[1])})))}}}),out);c.append(card)},(g,t)=>endCard(box,1,g,t,init1,()=>go('s2')))}
 /* ================= 2 · ECHO ACROSS 57 YEARS ================= */
 let shI=0;
@@ -1088,7 +1049,7 @@ function init2(){const L=$('#shl');L.innerHTML='';L.append(B('prev','','ghost sm
  card.append(recorder({label:'Echo · line '+(shI+1),max:20,compare:()=>play(),hint:'Listen first, then tap the mic and say it exactly like the speaker.',onDone:async r=>{let txt=null;if(r.text){const cm=compare(ln.t,r.text);K.paint(cm.marks);txt=cm.sc}let rh=null;if(r.blob){const bp=await peaksOf(r.blob,peaks.length);if(bp){drawPeaks(cvM,bp.p,'#F6EBDD');const jd=ln.e-ln.s;rh=Math.max(0,1-Math.abs(bp.dur-jd)/jd)}}
   const sc=txt==null?(rh==null?.7:rh):(txt*.7+(rh==null?.7:rh)*.3);const v=sc>=.8?3:sc>=.6?2:1;verdict.innerHTML='';verdict.append(el('div',{cls:'fb '+(v>=2?'ok':'no'),html:starsH(v)+'<span>'+(txt!=null?'Words '+Math.round(txt*100)+'% · ':'')+(rh!=null?'Rhythm '+Math.round(rh*100)+'%':'Recorded')+'</span>'}));fx[v>=2?'ok':'no']();
   if(v>=2){S.sh[shI]=1;addScore(2,v);const cnt=Object.keys(S.sh).length;setStars(2,cnt>=10?3:cnt>=6?2:1);bar(2,cnt/D.echo.length)}verdict.append(el('div',{cls:'row'},B('headphones','Speaker, then me','ghost',async()=>{await play();const a=new Audio(URL.createObjectURL(r.blob));a.setAttribute('playsinline','');a.play()}),B('next','Next line','gold',()=>{shI=(shI+1)%D.echo.length;init2()})))}}),verdict);
- box.append(card);requestAnimationFrame(()=>{drawPeaks(cvA,peaks,col);drawPeaks(cvM,peaks.map(()=>.05),'#F6EBDD')});setTimeout(()=>{if(cur==='s2')play()},900)}
+ box.append(card);requestAnimationFrame(()=>{drawPeaks(cvA,peaks,col);drawPeaks(cvM,peaks.map(()=>.05),'#F6EBDD')});setTimeout(()=>{if(document.body.contains(card)&&!recSt)play()},900)}
 /* ================= 3 · SAY IT LIKE A NATIVE ================= */
 function init3(){const box=$('#w3');box.innerHTML='';bar(3,0);stepper(3,box,PW,(p,c,st)=>{const i=PW.indexOf(p),k=KIND[p.kind],ln=D.lines[p.l];const tmr=timerEl(S.timer?Math.max(40,S.timer):0);const target=pChips([p],'big');
  const card=el('div',{cls:'qcard',style:'--kc:'+k[2]},el('div',{cls:'qhead'},el('span',{cls:'qtag',style:'background:'+k[2]},k[3]+' · '+(i+1)+' / 15'),tmr),
@@ -1098,7 +1059,7 @@ function init3(){const box=$('#w3');box.innerHTML='';bar(3,0);stepper(3,box,PW,(
   el('div',{cls:'lab'},'Your upgraded line lights this up'),target);
  const out=el('div');card.append(recorder({label:'Upgrade · '+p.term.replace(/[…,]/g,'').trim(),max:30,onText:t=>target.update(t),onDone:r=>{tmr.stop();out.innerHTML='';const model=()=>{out.append(el('div',{cls:'model'},el('span',{cls:'mlab',html:ic('spark')+'NATIVE VERSION'}),el('div',{},'“'+p.model+'”'),el('div',{cls:'row tight'},B('play','Hear it','ghost sm',()=>lex(i,'m')),B('headphones','Original, then native','ghost sm',async()=>{await line(p.l);await sleep(300);lex(i,'m')}))),el('div',{cls:'row'},B('next','Next','gold',st.next)))};
    if(r.text){const ok=p.chk.some(x=>has(r.text,x)),n=normW(r.text).length;st.mark(ok&&n>=5);fx[ok?'ok':'no']();if(ok)praise();out.append(fbk(ok,ok?(n>=5?'You used “'+short(p)+'” naturally!':'Good! Now make it a full sentence.'):'I didn’t hear “'+short(p)+'”. Listen to the native version and try again.'));model()}
-   else{model();out.append(el('div',{cls:'row'},el('span',{cls:'muted small'},'Did you use it?'),B('check','Yes','t sm',()=>{st.mark(true);fx.ok();st.next()}),B('replay','Try again','ghost sm',()=>{st.mark(false)})))}}}),out);c.append(card)},(g,t)=>endCard(box,3,g,t,init3,()=>go('s4')))}
+   else{model();out.append(el('div',{cls:'row'},el('span',{cls:'muted small'},'Did you use it?'),B('check','Yes','t sm',()=>{st.mark(true);fx.ok();st.next()}),B('replay','Try again','ghost sm',()=>{st.mark(false)})))}}}),out);c.append(card);setTimeout(()=>{if(document.body.contains(card)&&!recSt)line(p.l)},900)},(g,t)=>endCard(box,3,g,t,init3,()=>go('s4')))}
 /* ================= 4 · IN THE CHAIR ================= */
 function init4(){const box=$('#w4');box.innerHTML='';bar(4,0);stepper(4,box,D.chair,(q,c,st)=>{const i=D.chair.indexOf(q),ln=D.lines[q.l];const pw=pChips(PW);const tmr=timerEl(S.timer?Math.max(60,S.timer):0);
  const card=el('div',{cls:'qcard chairc'},el('div',{cls:'qhead'},el('span',{cls:'qtag'},'QUESTION '+(i+1)+' / '+D.chair.length),tmr),
@@ -1106,7 +1067,7 @@ function init4(){const box=$('#w4');box.innerHTML='';bar(4,0);stepper(4,box,D.ch
   el('div',{cls:'lab'},'Start like this'),chipsRow([q.hint]),el('div',{cls:'lab'},'Power language lights up when you use it'),pw);
  const out=el('div');card.append(recorder({label:'In the chair · '+(i+1),max:90,onText:t=>pw.update(t),onDone:r=>{tmr.stop();out.innerHTML='';const secs=r.secs||0,used=r.text?usedPower(r.text):[];const n=used.length;const v=Math.max(1,(secs>=30?1:0)+(secs>=45||n>=1?1:0)+(n>=2?1:0));st.mark(v>=2);addScore(4,v-1);
    out.append(el('div',{cls:'fb ok',html:starsH(v)+'<span>'+Math.round(secs)+' seconds'+(r.text?' · '+n+' power item'+(n===1?'':'s')+(n?': '+used.map(short).join(', '):''):'')+'</span>'}),el('div',{cls:'muted small center'},secs<30?'Aim for at least 30 seconds: give a reason and an example.':'Great length. Did you give a reason and an example?'),el('div',{cls:'row'},B('next','Next question','gold',st.next)));if(v>=2)fx.ok()}}),out);
- c.append(card);setTimeout(()=>{if(cur==='s4')line(q.l)},700)},(g,t)=>endCard(box,4,g,t,init4,()=>go('hub')))}
+ c.append(card);setTimeout(()=>{if(document.body.contains(card)&&!recSt)line(q.l)},900)},(g,t)=>endCard(box,4,g,t,init4,()=>go('hub')))}
 /* ================= init ================= */
 const INIT={1:init1,2:init2,3:init3,4:init4};
 function applyCtl(){$('#pace').value=S.pace;$('#paceLbl').textContent=RL[S.pace];$('#vol').value=S.vol;$('#arT').classList.toggle('on',S.ar);document.body.classList.toggle('noar',!S.ar);$('#fxT').classList.toggle('on',S.fx);$('#tmr').value=String(S.timer);VID.volume=S.vol;P.volume=S.vol}
@@ -1120,7 +1081,7 @@ $('#takesB').onclick=showTakes;$('#closeTakes').onclick=()=>$('#takes').classLis
 $$('.back').forEach(b=>b.onclick=()=>{fx.tap();go('hub')});$$('.powerB').forEach(b=>b.onclick=()=>{fx.tap();powerPanel()});
 $$('.segprev').forEach(b=>b.onclick=()=>{const n=+b.dataset.n;go(n>1?'s'+(n-1):'hub')});$$('.segnext').forEach(b=>b.onclick=()=>{const n=+b.dataset.n;go(n<4?'s'+(n+1):'hub')});
 $('#watchB').onclick=()=>{const m=$('#ctxm'),bx=m.querySelector('.box');bx.innerHTML='';bx.classList.add('wide');bx.append(el('div',{cls:'top'},el('h2',{},'Watch the whole talk'),B('cross','','ghost sm',()=>{vidStop();m.classList.remove('on');bx.classList.remove('wide')})),player({}));m.classList.add('on')};
-$('#go').onclick=async()=>{ac();hookOut();try{P.src=mURL('va');P.dataset.k='va';P.muted=true;await P.play();P.pause();P.muted=false;P.volume=S.vol}catch(e){P.muted=false}$('#start').classList.add('gone');setTimeout(()=>$('#start').style.display='none',500);applyCtl();renderHub();drawScope();if(S.last&&S.last!=='hub')toast('Welcome back! Tap “Continue” to carry on.');jingle()};
+$('#go').onclick=async()=>{ac();hookOut();try{VID.src=mURL('v');VID.muted=true;VID.play().then(()=>{VID.pause();VID.muted=false;VID.currentTime=0}).catch(()=>{VID.muted=false})}catch(e){}try{P.src=mURL('va');P.dataset.k='va';P.muted=true;await P.play();P.pause();P.muted=false;P.volume=S.vol}catch(e){P.muted=false}$('#start').classList.add('gone');setTimeout(()=>$('#start').style.display='none',500);applyCtl();renderHub();drawScope();preloadSfx();if(S.last&&S.last!=='hub')toast('Welcome back! Tap “Continue” to carry on.');if(S.fx)jingle()};
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopAudio();vidStop()}});
 $('#mascot').innerHTML=MASCOT;$('#cfgB').onclick=()=>{const c=$('#console');c.classList.toggle('col');$('#cfgB').classList.toggle('on',!c.classList.contains('col'));fx.tap()};if(innerWidth>760)$('#console').classList.remove('col');
 applyCtl();renderHub();
