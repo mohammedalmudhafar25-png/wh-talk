@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en"><head>
+<meta name="myalm-recorder" content="inapp">
 <meta charset="utf-8"><!--MYALM-APP v1--><meta name="myalm-web" content="https://mohammedalmudhafar25-png.github.io/wh-talk/a1-lesson3-important-date/"><link rel="manifest" href="manifest.webmanifest"><script>/* MYALM App Layer v1 — makes any MYALM lesson work everywhere.
    - Web (https): registers the offline service worker, shows "Install app" + offline-download progress,
      asks the browser to keep the lesson's saved progress/recordings (persistent storage).
@@ -500,6 +501,7 @@ async function recAll(){const d=await db();if(!d)return[];return new Promise(r=>
 async function recDel(id){const d=await db();if(!d)return;try{d.transaction('rec','readwrite').objectStore('rec').delete(id)}catch(e){}}
 async function recClear(){const d=await db();if(!d)return;try{d.transaction('rec','readwrite').objectStore('rec').clear()}catch(e){}}
 let srConflict=false,active=null;
+const MICMSG='<b style="color:#a02a31">The microphone is blocked.</b> Tap the lock / ⓘ icon next to the address and allow <b>Microphone</b>, then try again. On iPhone or if it still fails, open the online link of the lesson.<span class="ar">الميكروفون مقفول. اضغط على أيقونة القفل بجانب العنوان واسمح بالميكروفون ثم حاول مرة ثانية، أو افتح رابط الدرس.</span>';
 function mime(){if(!window.MediaRecorder)return'';for(const m of['audio/webm;codecs=opus','audio/mp4','audio/webm','audio/aac'])try{if(MediaRecorder.isTypeSupported(m))return m}catch(e){}return''}
 /* speakBox: target text (or '' for free speech), model key, opts {id,label,onPass,long,free(fillEl)} */
 const SPK={};let spkN=0;
@@ -509,12 +511,12 @@ function speakBox(target,model,o={}){const id=o.id||('sp'+(++spkN));SPK[id]={tar
  <div class="row" style="margin-top:8px">${model?`<button class="play sm" style="--c:var(--teal)" data-play="${model}" aria-label="Listen to the model">${ico('i-play')}</button>`:''}
  <button class="mic" data-mic="${id}">${ico('i-mic')}<span>${o.free?'Speak':'Say it'}</span></button><button class="mine" data-mine="${id}" hidden>${ico('i-play')} My voice</button></div><div class="heard" data-heard="${id}"></div></div>`}
 async function startMic(id,btn){unlock();if(active){active.stop();return}stopAudio();const cfg=SPK[id];if(!cfg)return;const box=btn.closest('.sp'),heardEl=$(`[data-heard="${id}"]`,box);
- let stream=null,rec=null,chunks=[],srObj=null,finalTxt='',srErr='',ended=false;const mt=mime();
+ let gumErr='',stream=null,rec=null,chunks=[],srObj=null,finalTxt='',srErr='',ended=false;const mt=mime();
  const useSR=!!SRC&&!(cfg.o.noCheck);
  if(window.MediaRecorder&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
-  try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});rec=new MediaRecorder(stream,mt?{mimeType:mt}:undefined);rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};rec.start()}catch(e){stream=null;rec=null}}
+  try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});rec=new MediaRecorder(stream,mt?{mimeType:mt}:undefined);rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};rec.start()}catch(e){stream=null;rec=null;gumErr=e&&e.name||'err'}}
  const phone=!!(stream&&stream.__myalmFake);if(phone)rec.onstop=()=>finish();
- if(!rec&&!useSR){heardEl.innerHTML='Microphone is not available here. Open the online link, or say it aloud to your partner.';return}
+ if(!rec&&!useSR){heardEl.innerHTML=MICMSG;return}
  if(useSR&&!phone&&!(rec&&srConflict===true)){try{srObj=new SRC();srObj.lang=S.prefs.acc==='UK'?'en-GB':'en-US';srObj.interimResults=true;srObj.maxAlternatives=3;srObj.continuous=!!cfg.o.long;
   srObj.onresult=e=>{let fin='',tmp='';for(let i=0;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)fin+=r[0].transcript+' ';else tmp+=r[0].transcript}finalTxt=fin;heardEl.textContent='… '+(fin+tmp)};
   srObj.onerror=e=>{srErr=e.error||'err'};srObj.onend=()=>{if(!cfg.o.long||srErr)finish()};srObj.start()}catch(e){srObj=null}}
@@ -533,7 +535,7 @@ async function startMic(id,btn){unlock();if(active){active.stop();return}stopAud
    if(r.score>=.7){heardEl.innerHTML=`${ico('i-check')} <b style="color:#0f6b38">${pct>=95?'Perfect!':'Good!'} ${pct}%</b> · I heard: “${esc(txt)}”`;praise();cfg.o.onPass&&cfg.o.onPass(r.score)}
    else{heardEl.innerHTML=`<b style="color:#a02a31">${pct}% · Try again.</b> Listen to the model. Red words need more care. <br>I heard: “${esc(txt)}”`;sfx('bad');cfg.o.onFail&&cfg.o.onFail(r.score)}return}
   if(blob){heardEl.innerHTML=`Listen to the model, then to your voice. Did you say it well? <button class="btn sm teal" data-self="${id}">${ico('i-check')} Yes</button>`}
-  else heardEl.textContent='I could not hear you. Check the microphone and try again.'}
+  else heardEl.innerHTML=gumErr?MICMSG:'I could not hear you. Check the microphone and try again.'}
  active={stop:finish,phone}}
 document.addEventListener('click',e=>{const f=e.target.closest('[data-self]');if(f){const c=SPK[f.dataset.self];f.closest('.heard').innerHTML=`${ico('i-check')} <b style="color:#0f6b38">Great — keep practising!</b>`;praise();c&&c.o.onPass&&c.o.onPass(.8)}
  const u=e.target.closest('[data-fill]');if(u){const c=SPK[u.dataset.fill];c&&c.o.fill&&c.o.fill(c.heard||'')}});
