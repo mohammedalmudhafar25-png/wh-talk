@@ -1,0 +1,32 @@
+{
+ "name": "L18 · The Wind and the Sun · MYALM Education",
+ "short_name": "Wind & Sun",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#FFFFFF",
+ "theme_color": "#1E2A5A",
+ "description": "Lesson 18 · The Wind and the Sun: watch, describe, word power, quizzes, shadowing, role-play, writing and conversation with UK/US voices and in-page recording.",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
