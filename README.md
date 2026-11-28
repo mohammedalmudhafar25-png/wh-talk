@@ -25,6 +25,8 @@ Interactive speaking games for English learners:
 
 - 🎣 **Fruits of Labor (A2 · L2 · story lesson)** — fishermen, a wise old leader and a hidden treasure: Listen & Read with 3 narrators (American 1, American 2, British), tap-for-Arabic words and Repeat-after-me shadowing; Act It Out role-play (be the old man or the fishermen, then play the scene with your own voice); Meet Your New Words (missing word, Arabic matching + examples, missing letters + pictures); Did You Understand?; Game of Translation (write or say); List of Wishes; HW summary with spelling check; Talking Time on the captain's wheel; glossary with word families. UK/US voices, Slow/Mid/Normal + speed slider, Arabic on/off, saved progress and recordings: https://mohammedalmudhafar25-png.github.io/wh-talk/fruits-of-labor/
 
+- 😊 **The Joy Gap (B2 · news lesson: reading, spelling, listening, speaking)** — why Japan comes last in workplace happiness: Read & Listen with tap-to-learn words and a live joy-score dashboard, Evidence Hunt (True/False/Not Given + tap the proof), Newsreader read-aloud with speech check; Spell Lab (Hear & Spell with live letters, Word Builder, Typo Trap, pairs Spelling Bee); Maya & Ben break-room chat (Blind Listen, Number Catcher, Gap Dictation with connected-speech tips, Your Turn reply + shadowing); Talk (Joy Interview with partner joy gauge, Where Do You Stand? with phrase lamps, HR role-play, Talk Wheel). UK/US voices, Slow/Mid/Normal + slider, Arabic on/off, saved progress and in-page recordings. Source: Engoo Daily News, article by Katie Pask: https://mohammedalmudhafar25-png.github.io/wh-talk/joy-gap/
+
 Open the live page: https://mohammedalmudhafar25-png.github.io/wh-talk/
 
 ## 📲 Every lesson is an installable offline app
